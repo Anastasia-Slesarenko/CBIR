@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Avito AAA</title>
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <img src="/static/avito.svg" />
+      </a>
+    </div>
+  </nav>
+
+  {% if not error and not image %}
+  <h1 class="display-1 text-center mb-3">Привет, ААА!</h1>
+  {% endif %}
+
+  {% if error %}
+  <div class="container col-8">
+    <div class="alert alert-danger" role="alert">
+      <p class="fs-3 text-center mb-3">{{error_code}}</p>
+      <p class="fs-4 text-center mb-3">{{error}}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if image %}
+  <div class="container text-center mb-3 col-8">
+    <img class="img-fluid" src="{{ image }}" />
+  </div>
+  {% endif %}
+
+  <div class="container mb-3 col-8">
+    <form method="post" action="/find_simular_images" class="border border-2 p-3 rounded-3"
+      enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Загрузите изображение в формате .jpg для распознавания текста</label>
+        <input class="form-control" type="file" id="formFile" name="image">
+      </div>
+      <button type="submit" class="btn btn-primary">Найти похожее</button>
+    </form>
+  </div>
+
+  <footer class="container mt-5">
+    <p class="text-center text-muted">© 2024 Академия Аналитиков Авито</p>
+  </footer>
+</body>
+
+</html>
