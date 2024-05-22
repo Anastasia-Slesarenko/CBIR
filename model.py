@@ -1,18 +1,30 @@
-import torch
-from oml.transforms.images.torchvision import get_normalisation_resize_torch
-from torch import nn, Tensor
 from io import BytesIO
-import PIL.Image as Image
-from PIL.JpegImagePlugin import JpegImageFile
+import torch
+from torchvision.transforms import Compose, Normalize, ToTensor, Resize
+from torch import Tensor
+from PIL import Image
+from settings import MODEL_PATH, MEAN, STD, TNormParam
+
+
+def get_normalisation_resize_torch(
+    im_size: int, mean: TNormParam = MEAN, std: TNormParam = STD
+) -> Compose:
+    """Функция трансформирует изображения"""
+    return Compose(
+        [
+            Resize(size=(im_size, im_size), antialias=True),
+            ToTensor(),
+            Normalize(mean=mean, std=std),
+        ]
+    )
 
 
 def extract_features_from_batch(
-    batch: list[JpegImageFile],
-    model_pth: str,
+    batch: list[Image.Image],
+    model_pth: str = MODEL_PATH,
     device: str = "cpu",
 ) -> Tensor:
-    """выдает эмбеддиинги батча. в случае инференса размер батча  равен 1"""
-    # уточнить выходную размерность [batch_size, emb_size]
+    """Функция возвращает эмбеддинги батча. На инференсе рамер батча 1."""
     model = torch.load(model_pth).to(device)
     transform = get_normalisation_resize_torch(im_size=224)
     batch = torch.cat([transform(image).unsqueeze(0) for image in batch], dim=0)
@@ -23,11 +35,12 @@ def extract_features_from_batch(
     return out
 
 
-def extract_features_from_image(image: BytesIO, model_pth: str) -> Tensor:
+def extract_features_from_image(image: BytesIO) -> Tensor:
+    """Функция возвращает эмбеддинг одного изображения"""
     batch = Image.open(image)
-    # batch = torch.tensor(image).squeeze(0)
-    return extract_features_from_batch([batch], model_pth)
+    return extract_features_from_batch([batch])
 
 
-def extract_features_from_images(batch: Tensor, model_pth: str) -> Tensor:
-    return extract_features_from_batch(batch, model_pth)
+def extract_features_from_images(batch: Tensor) -> Tensor:
+    """Функция возвращает эмбеддинги батча изображений"""
+    return extract_features_from_batch(batch)
