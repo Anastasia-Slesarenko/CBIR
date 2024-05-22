@@ -2,27 +2,25 @@ version: '3.8'
 
 services:
   postgres:
+    container_name: postgres-service
     image: postgres:latest
+    restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=db
     ports:
-      - '5432:5432'
-    volumes:
-      - ./volume_pgsql:/var/lib/postgresql/data
-    restart:
-      always
+      - "5432:5432"
+    # volumes:
+    #   - ./volume_pgsql:/var/lib/postgresql/data
 
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
-  #     PGADMIN_DEFAULT_PASSWORD: password
-  #     PGADMIN_LISTEN_PORT: 80
-  #   ports:
-  #     - 15432:80
-  #   volumes:
-  #     - ./pgadmin:/var/lib/pgadmin
-  #   depends_on:
-  #     - postgres
+  retrieval_service:
+    container_name: retrieval-service
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "80:8000"
+    depends_on:
+      - postgres
