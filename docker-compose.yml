@@ -20,6 +20,8 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    environment:
+      - HOSTNAME=postgres
     ports:
       - "80:8000"
     depends_on:
