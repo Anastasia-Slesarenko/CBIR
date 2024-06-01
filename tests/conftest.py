@@ -4,17 +4,28 @@ from httpx import AsyncClient
 from typing import AsyncGenerator
 import subprocess
 import pytest
-from unittest.mock import patch
 import time
 from app import app
-import db
+from db import Storage
+from settings import (
+    HOSTNAME,
+    USERNAME,
+    PASSWORD,
+    DATABASE_NAME,
+    PORT,
+)
 
 
 client = TestClient(app, base_url="http://")
-MOCK_HOSTNAME = "localhost"
 compose_file = "docker-compose-dev.yml"
 up_cmd = ["docker-compose", "-f", compose_file, "up", "--build", "-d"]
-down_cmd = ["docker-compose", "-f", compose_file, "down", "--remove-orphans"]
+down_cmd = [
+    "docker-compose",
+    "-f",
+    compose_file,
+    "down",
+    "--remove-orphans",
+]
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -41,11 +52,16 @@ def event_loop(request):
 @pytest.fixture(scope="session")
 async def ac() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url="http://") as ac:
-        with patch("db.HOSTNAME", MOCK_HOSTNAME):
-            yield ac
+        yield ac
 
 
 @pytest.fixture()
-def mock_db():
-    with patch("db.HOSTNAME", MOCK_HOSTNAME):
-        yield db
+def mock_storage():
+    storage = Storage(
+        host=HOSTNAME,
+        user=USERNAME,
+        password=PASSWORD,
+        database=DATABASE_NAME,
+        port=PORT,
+    )
+    yield storage
