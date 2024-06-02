@@ -1,13 +1,14 @@
 import faiss
 from torch import Tensor
 from .db import Storage
+from .settings import FAISS_INDEX_PATH
 
 
 def train_faiss_index(
     storage: Storage,
     batch_size: int,
     emb_size: int,
-    faiss_index_path: str = "faiss_index.index",
+    faiss_index_path: str = FAISS_INDEX_PATH,
 ) -> None:
     """Initializes FAISS index on CPU and saves it."""
     index = faiss.IndexFlatL2(emb_size)
@@ -21,7 +22,7 @@ def train_faiss_index_gpu(
     storage: Storage,
     batch_size: int,
     emb_size: int,
-    faiss_index_path: str = "faiss_index.index",
+    faiss_index_path: str = FAISS_INDEX_PATH,
 ) -> None:
     """Initializes FAISS index on GPU and saves it."""
     res = faiss.StandardGpuResources()
