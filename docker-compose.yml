@@ -1,18 +1,18 @@
 version: '3.8'
 
 services:
-  # postgres:
-  #   container_name: postgres-service
-  #   image: postgres:latest
-  #   restart: always
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgres
-  #     - POSTGRES_DB=db
-  #   ports:
-  #     - "5432:5432"
-  #   # volumes:
-  #   #   - ./volume_pgsql:/var/lib/postgresql/data
+  postgres:
+    container_name: postgres-service
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db
+    ports:
+      - "5432:5432"
+    # volumes:
+    #   - ./volume_pgsql:/var/lib/postgresql/data
 
   retrieval_service:
     container_name: retrieval-service
@@ -27,5 +27,5 @@ services:
       - "80:8000"
     volumes:
       - ./data:/app/data
-    # depends_on:
-    #   - postgres
+    depends_on:
+      - postgres

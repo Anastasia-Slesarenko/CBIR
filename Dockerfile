@@ -1,29 +1,29 @@
 FROM python:3.9-slim
 
 RUN mkdir /app
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6 -y
+
+COPY ./requirements.txt /app
 
 WORKDIR /app
 
-RUN python -m pip install fastapi==0.111.0
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
 
 EXPOSE 8000
-CMD ["fastapi", "run", "./bin/test.py"]
+CMD ["python", "./bin/main.py"]
 
-# FROM python:3.8-slim
+
 
 # RUN mkdir /app
-# RUN apt-get update
-# RUN apt-get install ffmpeg libsm6 libxext6 -y
-
-# COPY ./requirements.txt /app
 
 # WORKDIR /app
 
-# RUN python -m pip install --no-cache-dir -r requirements.txt
+# RUN python -m pip install fastapi==0.111.0
 
 # COPY . /app
 
 # EXPOSE 8000
-# CMD ["python", "./bin/main.py"]
+# CMD ["fastapi", "run", "./bin/test.py"]
