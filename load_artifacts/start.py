@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append("../")
+
 import pandas as pd
 import torch
 from tqdm import tqdm
@@ -11,12 +15,17 @@ from lib.settings import (
     PASSWORD,
     DATABASE_NAME,
     PORT,
+    IMAGE_FORMAT,
+    IMAGE_PATH, 
+    MODEL_PATH,
+    FAISS_INDEX_PATH,
 )
 
 
 def prepare_search_retrieval_db(
     storage: Storage,
     image_path: str,
+    image_format: str,
     csv_path: str,
     faiss_index_path: str,
     device: str,
@@ -40,6 +49,7 @@ def prepare_search_retrieval_db(
             .iloc[batch : batch + batch_size]
             .tolist(),
             image_path=image_path,
+            image_format=image_format,
         )
         features_galleries = extract_features_from_images(
             image_batch, device=device
@@ -66,11 +76,9 @@ def prepare_search_retrieval_db(
 
 if __name__ == "__main__":
     if torch.cuda.is_available():
-        device = torch.device("cuda:0")
+        device = torch.device("cuda")
 
     csv_path = "../data/avito_images.csv"
-    image_path = "../data/images"
-    faiss_index_path = "../data/faiss_index.index"
 
     storage = Storage(
         host=HOSTNAME,
@@ -81,8 +89,12 @@ if __name__ == "__main__":
     )
     prepare_search_retrieval_db(
         storage=storage,
-        image_path=image_path,
+        image_path=IMAGE_PATH,
+        image_format=IMAGE_FORMAT,
         csv_path=csv_path,
-        faiss_index_path=faiss_index_path,
+        faiss_index_path=FAISS_INDEX_PATH,
         device=device,
     )
+    print("=====================================================")
+    print("finish")
+    print("=====================================================")

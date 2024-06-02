@@ -38,7 +38,7 @@ class Storage:
                 item_url TEXT NOT NULL,
                 title TEXT NOT NULL
             );
-            CREATE INDEX image_id_btree ON image_descriptor (image_id);
+            CREATE INDEX IF NOT EXISTS image_id_btree ON image_descriptor (image_id);
         """
         connection = self.get_connection()
         with connection.cursor() as cursor:
@@ -87,7 +87,7 @@ class Storage:
             cursor.execute(query, (limit, offset))
             res = cursor.fetchall()
         self._pool.putconn(connection)
-        ids = [el[0] for el in res]
+        ids = np.array([np.float32(el[0]) for el in res])
         batch = np.array([el[1] for el in res])
         return ids, batch
 

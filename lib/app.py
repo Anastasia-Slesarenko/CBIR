@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from .db import Storage
 from .utils import build_html
+from .loaders import load_torch_model
 from .settings import (
     HOSTNAME,
     USERNAME,
@@ -15,9 +16,10 @@ from .settings import (
     DATABASE_NAME,
     PORT,
     ROOT_DIR,
+    MODEL_FILE,
+    MODEL_URL,
+    MODEL_PATH,
 )
-
-logger = logging.getLogger(__name__)
 
 
 def init_storage():
@@ -39,6 +41,14 @@ app.mount(
     name="static",
 )
 templates = Jinja2Templates(directory=os.path.join(ROOT_DIR, "templates"))
+# загружаем модель из диска если файла еще нет
+if not os.path.isfile(MODEL_PATH):
+    load_torch_model(
+        yadisk_model_url=MODEL_URL,
+        model_dir="../data",
+        file_name=MODEL_FILE,
+    )
+logger = logging.getLogger(__name__)
 
 
 @app.get("/", response_class=HTMLResponse)

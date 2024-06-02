@@ -1,18 +1,18 @@
 from io import BytesIO
 import os
 from PIL import Image
-from .settings import IMAGE_PATH, IMAGE_FORMAT
 import requests
 import torch
 
 
 def get_bytes_image(
     file: int,
-    image_path: str = IMAGE_PATH,
+    image_path: str,
+    image_format: str,
 ) -> BytesIO:
     """Загружает похожие изображения из хранилища и
     переводит их в байты для отображения в html"""
-    img = Image.open(os.path.join(image_path, str(file) + IMAGE_FORMAT))
+    img = Image.open(os.path.join(image_path, str(file) + image_format))
     with BytesIO() as output:
         img.save(output, format="PNG")
         bytes_array = output.getvalue()
@@ -21,13 +21,14 @@ def get_bytes_image(
 
 def read_list_images(
     image_sources: list[int],
-    image_path: str = IMAGE_PATH,
+    image_path: str,
+    image_format: str,
 ) -> list[Image.Image]:
     """Загружает список изображений из хранилища для записи их эмбеддингов"""
     images = []
     for file in image_sources:
         images.append(
-            Image.open(os.path.join(image_path, str(file) + IMAGE_FORMAT))
+            Image.open(os.path.join(image_path, str(file) + image_format))
         )
     return images
 
