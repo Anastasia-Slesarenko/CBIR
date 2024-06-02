@@ -5,3 +5,4 @@ venv/
 **.csv
 !tests/test.csv
 **.index
+.pytest_cache

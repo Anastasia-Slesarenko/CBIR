@@ -1,7 +1,9 @@
 from io import BytesIO
 import os
 from PIL import Image
-from settings import IMAGE_PATH, IMAGE_FORMAT
+from .settings import IMAGE_PATH, IMAGE_FORMAT, MODEL_PATH
+import requests
+import torch
 
 
 def get_bytes_image(file: int) -> BytesIO:
@@ -22,3 +24,13 @@ def read_list_images(image_sources: list[int]) -> list[Image.Image]:
             Image.open(os.path.join(IMAGE_PATH, str(file) + IMAGE_FORMAT))
         )
     return images
+
+
+def load_torch_model(yadisk_model_url: str) -> None:
+    API_ENDPOINT = "https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key={}"
+    responce = requests.get(API_ENDPOINT.format(yadisk_model_url))
+    download_link = responce.json()["href"]
+    torch.hub.load_state_dict_from_url(
+        url=download_link, model_dir=MODEL_PATH
+    )
+    return None

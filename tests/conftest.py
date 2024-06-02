@@ -5,9 +5,9 @@ from typing import AsyncGenerator
 import subprocess
 import pytest
 import time
-from app import app
-from db import Storage
-from settings import (
+from lib.app import app
+from lib.db import Storage
+from lib.settings import (
     HOSTNAME,
     USERNAME,
     PASSWORD,
