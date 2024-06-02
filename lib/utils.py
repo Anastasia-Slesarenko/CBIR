@@ -1,4 +1,5 @@
-from .loaders import extract_features_from_image, get_bytes_image
+from .loaders import get_bytes_image
+from .settings import IMAGE_PATH, IMAGE_FORMAT
 from PIL import Image
 from .model import extract_features_from_image
 from .faiss_search import get_similar_images
@@ -22,7 +23,11 @@ def build_html(
     for i in range(1, 9):
         # read image
         html_data[f"image{i}"] = base64.b64encode(
-            get_bytes_image(candidates[i - 1][0])
+            get_bytes_image(
+                file=candidates[i - 1][0],
+                image_path=IMAGE_PATH,
+                image_format=IMAGE_FORMAT,
+            )
         ).decode("utf-8")
         html_data[f"href{i}"] = candidates[i - 1][1]
         html_data[f"title{i}"] = candidates[i - 1][2]

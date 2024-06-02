@@ -1,8 +1,4 @@
 import uvicorn
-import sys
-
-sys.path.append("../")
-
 from lib.app import app
 
 if __name__ == "__main__":
