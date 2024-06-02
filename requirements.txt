@@ -1,5 +1,6 @@
 fastapi==0.111.0
-faiss_cpu==1.8.0
+# faiss_cpu==1.8.0
+faiss-gpu==1.7.2
 gdown==5.2.0
 pillow==10.3.0
 psycopg2-binary==2.9.9

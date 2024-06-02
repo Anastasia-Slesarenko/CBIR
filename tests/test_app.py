@@ -1,12 +1,12 @@
 import pytest
 from httpx import AsyncClient
-from db import Storage
+from lib.db import Storage
 import os
 from bs4 import BeautifulSoup
 
 
 test_csv_pg = "tests/test.csv"
-test_image = "tests/test_image.jpg"
+test_image = "tests/query_image_test.jpg"
 
 
 @pytest.mark.order(2)
