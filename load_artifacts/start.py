@@ -16,7 +16,9 @@ from lib.settings import (
 
 def prepare_search_retrieval_db(
     storage: Storage,
-    path_data: str,
+    image_path: str,
+    csv_path: str,
+    faiss_index_path: str,
     device: str,
     batch_size: int = 64,
     emb_size: int = 384,
@@ -31,10 +33,13 @@ def prepare_search_retrieval_db(
     """
     # Create table, get embedding and insert data
     storage.create_tables_structure()
-    df = pd.read_csv(path_data)
+    df = pd.read_csv(csv_path)
     for batch in tqdm(range(0, df.shape[0], batch_size)):
         image_batch = read_list_images(
-            df[col_image_id].iloc[batch : batch + batch_size].tolist()
+            image_sources=df[col_image_id]
+            .iloc[batch : batch + batch_size]
+            .tolist(),
+            image_path=image_path,
         )
         features_galleries = extract_features_from_images(
             image_batch, device=device
@@ -50,7 +55,12 @@ def prepare_search_retrieval_db(
         ]
         storage.save_embeddings(features_galleries)
     # Create and train faiss index
-    train_faiss_index(storage, batch_size, emb_size)
+    train_faiss_index(
+        storage=storage,
+        batch_size=batch_size,
+        emb_size=emb_size,
+        faiss_index_path=faiss_index_path,
+    )
     return None
 
 
@@ -58,7 +68,9 @@ if __name__ == "__main__":
     if torch.cuda.is_available():
         device = torch.device("cuda:0")
 
-    path_data = ""
+    csv_path = "../data/avito_images.csv"
+    image_path = "../data/images"
+    faiss_index_path = "../data/faiss_index.index"
 
     storage = Storage(
         host=HOSTNAME,
@@ -69,6 +81,8 @@ if __name__ == "__main__":
     )
     prepare_search_retrieval_db(
         storage=storage,
-        path_data=path_data,
+        image_path=image_path,
+        csv_path=csv_path,
+        faiss_index_path=faiss_index_path,
         device=device,
     )

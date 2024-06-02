@@ -6,7 +6,9 @@
 /venv
 .vscode
 /load_articats
-images/
+data/
 **.csv
 !tests/test.csv
 **.index
+**.tar
+**.zip
