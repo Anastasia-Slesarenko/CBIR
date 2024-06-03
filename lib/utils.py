@@ -1,5 +1,5 @@
 from .loaders import get_bytes_image
-from .settings import IMAGE_PATH, IMAGE_FORMAT
+from .settings import IMAGE_PATH, IMAGE_FORMAT, FAISS_INDEX_PATH
 from PIL import Image
 from .model import extract_features_from_image
 from .faiss_search import get_similar_images
@@ -13,8 +13,6 @@ def build_html(
 ) -> dict:
     """По входящему изображению находит похожие картинки и собирает бинарники картинок,
     названия и ссылки на объявления в словарь для формирования html"""
-    query_feature = extract_features_from_image(image)
-    candidates = get_similar_images(storage, query_feature, topk=8)
     main_image = base64.b64encode(image.getvalue()).decode("utf-8")
     html_data = {
         "request": request,

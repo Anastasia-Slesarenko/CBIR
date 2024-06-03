@@ -8,6 +8,9 @@ import numpy as np
 
 class Storage:
     def __init__(self, user, password, host, port, database):
+        """
+        Initializes the connection to the database using a connection pool.
+        """
         self._pool = SimpleConnectionPool(
             minconn=1,
             maxconn=10,
@@ -18,10 +21,10 @@ class Storage:
             dbname=database,
         )
 
-    def disconnect(self) -> None:
-        self._pool.closeall()
-
     def get_connection(self):
+        """
+        Retrieves a connection from the connection pool.
+        """
         try:
             return self._pool.getconn()
         except (Exception, Error) as e:
@@ -29,7 +32,9 @@ class Storage:
             return None
 
     def create_tables_structure(self) -> None:
-        """Создает таблицу, если ее не существует"""
+        """
+        Creates the image_descriptor table in the database if it does not exist.
+        """
         create_table_query = """
             CREATE TABLE IF NOT EXISTS image_descriptor (
                 id SERIAL PRIMARY KEY,
@@ -47,7 +52,9 @@ class Storage:
         self._pool.putconn(connection)
 
     def save_embeddings(self, insert_embeddings: list) -> None:
-        """Записывает данные о изображениях и их эмбеддинги в таблицу"""
+        """
+        Inserts image data and embeddings into the image_descriptor table.
+        """
         insert_query = """
             INSERT INTO image_descriptor (image_id, embedding, item_url, title)
             VALUES %s;
@@ -59,7 +66,9 @@ class Storage:
         self._pool.putconn(connection)
 
     def count_rows(self) -> int:
-        """Считает количество строк в таблице"""
+        """
+        Counts the number of rows in the image_descriptor table.
+        """
         query = """
             SELECT COUNT(*)
             FROM image_descriptor;
@@ -74,7 +83,9 @@ class Storage:
     def get_batch_from_pg(
         self, limit: int, offset: int
     ) -> tuple[list, np.array]:
-        """Отдает батч заданного размера"""
+        """
+        Gives a batch of image embeddings and their ids from the image_descriptor table.
+        """
         query = """
             SELECT image_id, embedding
             FROM image_descriptor
@@ -87,7 +98,7 @@ class Storage:
             cursor.execute(query, (limit, offset))
             res = cursor.fetchall()
         self._pool.putconn(connection)
-        ids = np.array([np.float32(el[0]) for el in res])
+        ids = np.array([el[0] for el in res])
         batch = np.array([el[1] for el in res])
         return ids, batch
 
@@ -95,25 +106,30 @@ class Storage:
         self,
         batch_size: int,
     ) -> Generator[np.array, None, None]:
-        """Генератор, который извлекает эмбеддинги из базы данных пакетами."""
+        """
+        A generator that retrieves embeddings from the database in batches.
+        """
         n_rows = self.count_rows()
         for step in range(0, n_rows, batch_size):
             yield self.get_batch_from_pg(limit=batch_size, offset=step)
 
     def get_image_by_index(self, index_list: list[int]) -> list[str]:
-        """Принимает ранжированные индексы похожих изображений и
-        возвращает ссылки на изображения в указанном порядке"""
+        """
+        Retrieves image_ids from the database with item_url and 
+        their titles by index and gives them in the specified order.
+        """
+        placeholders = ', '.join(['%s'] * len(index_list))
         query = f"""(
             SELECT
                 image_id,
                 item_url,
                 title
             FROM image_descriptor
-            WHERE image_id in ({', '.join([str(idx) for idx in index_list])})
+            WHERE image_id in ({placeholders})
         )"""
         connection = self.get_connection()
         with connection.cursor() as cursor:
-            cursor.execute(query)
+            cursor.execute(query, index_list)
             rows = cursor.fetchall()
         self._pool.putconn(connection)
         image_id_dict = {row[0]: row for row in rows}

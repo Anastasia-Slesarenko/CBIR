@@ -41,13 +41,13 @@ app.mount(
     name="static",
 )
 templates = Jinja2Templates(directory=os.path.join(ROOT_DIR, "templates"))
-# загружаем модель из диска если файла еще нет
-if not os.path.isfile(MODEL_PATH):
-    load_torch_model(
-        yadisk_model_url=MODEL_URL,
-        model_dir="../data",
-        file_name=MODEL_FILE,
-    )
+# # загружаем модель из диска если файла еще нет
+# if not os.path.isfile(MODEL_PATH):
+#     load_torch_model(
+#         yadisk_model_url=MODEL_URL,
+#         model_dir="../data",
+#         file_name=MODEL_FILE,
+#     )
 logger = logging.getLogger(__name__)
 
 
@@ -79,6 +79,8 @@ def find_simular_images(
         )
     try:
         image = BytesIO(image.file.read())
+        query_emb = extract_features_from_image(image)
+        candidates = get_similar_images(storage, query_emb, topk, faiss_index_path)
         html_data = build_html(
             image=image,
             storage=storage,
