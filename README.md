@@ -48,5 +48,3 @@ docker-compose -f docker-compose-dev.yml down --remove-orphans
 ```
 pytest -vv tests/ --show-capture=all -W ignore::DeprecationWarning
 ```
-## Требования
-python 3.11

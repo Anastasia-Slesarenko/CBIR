@@ -20,15 +20,15 @@ def train_faiss_index(
 def get_similar_images(
     storage: Storage,
     query_emb: Tensor,
-    topk: int = 8,
     faiss_index_path: str,
+    topk: int = 8,
 ) -> list:
     """
-    Finds top k nearest image embeddings to the query embedding using FAISS index.
-    Return images with urls to ads and titles. 
+    Finds top k nearest image embeddings to the query embedding
+    using FAISS index. Return images with urls to ads and titles.
     """
     index = faiss.read_index(faiss_index_path)
     query_np = query_emb.numpy()
     _, indices = index.search(query_np, topk)
-    image_paths = storage.get_image_by_index(indices[0].tolist())
-    return image_paths
+    candidates = storage.get_image_by_index(indices[0].tolist())
+    return candidates

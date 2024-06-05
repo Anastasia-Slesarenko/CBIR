@@ -2,9 +2,7 @@ import asyncio
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from typing import AsyncGenerator
-import subprocess
 import pytest
-import time
 from lib.app import app
 from lib.db import Storage
 from lib.settings import (
@@ -17,29 +15,6 @@ from lib.settings import (
 
 
 client = TestClient(app, base_url="http://")
-compose_file = "docker-compose-dev.yml"
-up_cmd = ["docker-compose", "-f", compose_file, "up", "--build", "-d"]
-down_cmd = [
-    "docker-compose",
-    "-f",
-    compose_file,
-    "down",
-    "--remove-orphans",
-]
-
-
-@pytest.fixture(scope="session", autouse=True)
-def docker_compose():
-    """Pytest fixture to set up and tear down docker-compose services."""
-    try:
-        print("Starting Docker Compose services...")
-        subprocess.check_call(up_cmd)
-        time.sleep(5)
-        print("Docker Compose services started.")
-        yield
-    finally:
-        subprocess.check_call(down_cmd)
-        print("Docker Compose services stopped.")
 
 
 @pytest.fixture(scope="session")
@@ -55,7 +30,7 @@ async def ac() -> AsyncGenerator[AsyncClient, None]:
         yield ac
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session", autouse=True)
 def mock_storage():
     storage = Storage(
         host=HOSTNAME,
@@ -65,3 +40,4 @@ def mock_storage():
         port=PORT,
     )
     yield storage
+    storage.disconnect()
