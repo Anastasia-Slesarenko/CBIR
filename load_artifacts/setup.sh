@@ -20,25 +20,25 @@ main_docker_compose_file=$project_path/docker-compose.yml
 postgresql_service="postgres"
 main_app_service="retrieval_service"
 
-# mkdir -p $app_volume_path
+mkdir -p $app_volume_path
 
-# # create postgresql from docker-compose
-# cd $project_path
-# docker-compose -f docker-compose.yml up --build -d $postgresql_service
+# create postgresql from docker-compose
+cd $project_path
+docker-compose -f docker-compose.yml up --build -d $postgresql_service
 
-# API_ENDPOINT="https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key="
-# response=$(curl -s "$API_ENDPOINT$data_ydisk_url")
-# data_download_link=$(echo "$response" | jq -r '.href')
+API_ENDPOINT="https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key="
+response=$(curl -s "$API_ENDPOINT$data_ydisk_url")
+data_download_link=$(echo "$response" | jq -r '.href')
 
-# Download tar file
-# cd $prestart_path
-# curl -L "$data_download_link" -o data.tar
+Download tar file
+cd $prestart_path
+curl -L "$data_download_link" -o data.tar
 
-# Unzip tar file to specified path
-# tar -xf $prestart_path/data.tar -C $app_volume_path/
-# rm -rf $prestart_path/data.tar
-# # Requires Root user rights
-# sudo chmod -R 777 $app_volume_path
+Unzip tar file to specified path
+tar -xf $prestart_path/data.tar -C $app_volume_path/
+rm -rf $prestart_path/data.tar
+# Requires Root user rights
+sudo chmod -R 777 $app_volume_path
 
 # Create and activate Python virtual environment
 cd $prestart_path
