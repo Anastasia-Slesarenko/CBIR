@@ -55,14 +55,22 @@ if __name__ == "__main__":
             "tests/query_image_test.jpg",
         )
     )
+
 # 20k images
+# vits16, emb_size: 384
 # Total requests made: 176
 # Successful requests made: 176
 # Average response time, s: 0.34
 # Requests Per Second (RPS): 2.93
 
-# 20 images
-# Total requests made: 296
-# Successful requests made: 296
-# Average response time, s: 0.20
-# Requests Per Second (RPS): 4.93
+# vitb32_unicom, emb_size: 512,
+# Total requests made: 189
+# Successful requests made: 189
+# Average response time, s: 0.32
+# Requests Per Second (RPS): 3.15
+
+# vitl14_336px_unicom, emb_size: 768
+# Total requests made: 43
+# Successful requests made: 43
+# Average response time, s: 1.4
+# Requests Per Second (RPS): 0.71

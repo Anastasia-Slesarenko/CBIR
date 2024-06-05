@@ -22,6 +22,8 @@ from lib.settings import (
     USERNAME,
     VOLUME_DIR,
     YADISK_API_ENDPOINT,
+    EMBED_SIZE,
+    MODEL_NAME,
 )
 from lib.utils import load_torch_model
 
@@ -50,6 +52,7 @@ if __name__ == "__main__":
         csv_path=CSV_PATH,
         faiss_index_path=FAISS_INDEX_PATH,
         device=DEVICE,
+        emb_size=EMBED_SIZE[MODEL_NAME],
     )
     print("=" * 52)
     print("The database is ready to search for similar images.")

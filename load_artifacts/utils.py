@@ -19,8 +19,8 @@ def prepare_search_db(
     model: Module,
     faiss_index_path: str,
     device: str,
+    emb_size: int,
     batch_size: int = 64,
-    emb_size: int = 384,
     col_image_id: str = "image_id",
     col_item_url: str = "item_url",
     col_title: str = "title",
@@ -31,7 +31,7 @@ def prepare_search_db(
     the embedding of images and writes them to the table. After that,
     it creates faiss indexes for the search.
     """
-    # Create table, get embedding and insert data
+    # # Create table, get embedding and insert data
     storage.create_tables_structure()
     df = pd.read_csv(csv_path)
     for batch in tqdm(range(0, df.shape[0], batch_size)):

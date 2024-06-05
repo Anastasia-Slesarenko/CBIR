@@ -6,25 +6,9 @@ from oml.registry.transforms import get_transforms_for_pretrained
 from PIL import Image
 from torch import Tensor
 from torchvision.transforms import Compose as tCompose
-from torchvision.transforms import Normalize, Resize, ToTensor
-from .settings import IMAGE_SIZE, MEAN, MODEL_NAME, STD, TNormParam
+from .settings import MODEL_NAME
 
 TTransforms = Union[aCompose, tCompose]
-
-
-def get_normalisation_resize_torch(
-    im_size: int, mean: TNormParam = MEAN, std: TNormParam = STD
-) -> tCompose:
-    """
-    Transforms images by resizing, converting to tensor, and normalizing.
-    """
-    return tCompose(
-        [
-            Resize(size=(im_size, im_size), antialias=True),
-            ToTensor(),
-            Normalize(mean=mean, std=std),
-        ]
-    )
 
 
 def oml_transform(model_name: str) -> TTransforms:
@@ -36,12 +20,6 @@ def oml_transform(model_name: str) -> TTransforms:
     return transforms
 
 
-MODEL_TRANSFORM = {
-    "vit": get_normalisation_resize_torch(im_size=IMAGE_SIZE),
-    "vitl14_336px_unicom": oml_transform("vitl14_336px_unicom"),
-}
-
-
 def extract_features_from_batch(
     batch: list[Image.Image],
     model: torch.nn.Module,
@@ -51,7 +29,7 @@ def extract_features_from_batch(
     Extracts embeddings from a batch of images.
     During inference, the batch size is 1.
     """
-    transform = MODEL_TRANSFORM[MODEL_NAME]
+    transform = oml_transform(MODEL_NAME)
     batch = torch.cat(
         [transform(image).unsqueeze(0) for image in batch], dim=0
     )

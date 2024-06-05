@@ -22,11 +22,16 @@ IMAGE_SIZE = 224
 
 FAISS_INDEX_PATH = os.path.join(VOLUME_DIR, "faiss_index.index")
 
-MODEL_NAME = "vitl14_336px_unicom"
-MODEL_URL = "https://disk.yandex.ru/d/utcWEJ-STv0OsQ"
+MODEL_NAME = "vitb32_unicom"
+MODEL_URL = "https://disk.yandex.ru/d/6U7YaqjrqGDjYQ"
 MODEL_FILE = "extractor.pth"
 MODEL_PATH = os.path.join(VOLUME_DIR, MODEL_FILE)
 CSV_PATH = os.path.join(VOLUME_DIR, "avito_images.csv")
+EMBED_SIZE = {
+    "vits16": 384,
+    "vitb32_unicom": 512,
+    "vitl14_336px_unicom": 768,
+}
 
 if torch.cuda.is_available():
     DEVICE = torch.device("cuda")
