@@ -1,6 +1,6 @@
 import sys
 
-# sys.path.append("../")
+sys.path.append("../")
 
 import pandas as pd
 from tqdm import tqdm
@@ -8,19 +8,6 @@ from lib.model import extract_features_from_images
 from lib.db import Storage
 from lib.faiss_search import train_faiss_index
 from lib.utils import read_list_images
-from lib.settings import (
-    HOSTNAME,
-    USERNAME,
-    PASSWORD,
-    DATABASE_NAME,
-    PORT,
-    IMAGE_FORMAT,
-    IMAGE_PATH,
-    MODEL_PATH,
-    CSV_PATH,
-    FAISS_INDEX_PATH,
-    DEVICE,
-)
 
 
 def prepare_search_db(
@@ -77,26 +64,3 @@ def prepare_search_db(
         faiss_index_path=faiss_index_path,
     )
     return None
-
-
-if __name__ == "__main__":
-
-    storage = Storage(
-        host=HOSTNAME,
-        user=USERNAME,
-        password=PASSWORD,
-        database=DATABASE_NAME,
-        port=PORT,
-    )
-    prepare_search_db(
-        storage=storage,
-        image_path=IMAGE_PATH,
-        image_format=IMAGE_FORMAT,
-        model_pth=MODEL_PATH,
-        csv_path=CSV_PATH,
-        faiss_index_path=FAISS_INDEX_PATH,
-        device=DEVICE,
-    )
-    print("=" * 52)
-    print("The database is ready to search for similar images.")
-    print("=" * 52)
