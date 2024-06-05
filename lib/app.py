@@ -1,37 +1,36 @@
 import logging
-import sys
 import os
+import sys
+from contextlib import asynccontextmanager
 from io import BytesIO
 from typing import AsyncGenerator
-from contextlib import asynccontextmanager
-from fastapi import FastAPI, UploadFile, Request
+from fastapi import FastAPI, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from torch import load as torch_model_load
 from .db import Storage
 from .faiss_search import get_similar_images
-from .model import extract_features_from_image
 from .html_builder import build_html
-from .utils import load_torch_model as download_model_from_url
+from .model import extract_features_from_image
 from .settings import (
-    HOSTNAME,
-    USERNAME,
-    PASSWORD,
     DATABASE_NAME,
-    PORT,
-    VOLUME_DIR,
-    MODEL_URL,
-    ROOT_DIR,
+    DEVICE,
+    FAISS_INDEX_PATH,
+    HOSTNAME,
     IMAGE_FORMAT,
     IMAGE_PATH,
-    MODEL_PATH,
     MODEL_FILE,
-    FAISS_INDEX_PATH,
-    DEVICE,
+    MODEL_PATH,
+    MODEL_URL,
+    PASSWORD,
+    PORT,
+    ROOT_DIR,
+    USERNAME,
+    VOLUME_DIR,
     YADISK_API_ENDPOINT,
 )
-
+from .utils import load_torch_model as download_model_from_url
 
 logger = logging.getLogger(__name__)
 

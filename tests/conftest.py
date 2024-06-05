@@ -1,28 +1,25 @@
 import asyncio
-from fastapi.testclient import TestClient
-from httpx import AsyncClient
-from typing import AsyncGenerator
+import os
 import pytest
+from fastapi.testclient import TestClient
 from torch import load as torch_model_load
-from lib.utils import load_torch_model as download_model_from_url
 from lib.app import app
 from lib.db import Storage
-from lib.utils import load_torch_model
 from lib.settings import (
-    HOSTNAME,
-    USERNAME,
-    PASSWORD,
     DATABASE_NAME,
-    PORT,
-    VOLUME_DIR,
+    DEVICE,
+    HOSTNAME,
     MODEL_FILE,
     MODEL_PATH,
-    YADISK_API_ENDPOINT,
     MODEL_URL,
-    DEVICE,
+    PASSWORD,
+    PORT,
+    USERNAME,
+    VOLUME_DIR,
+    YADISK_API_ENDPOINT,
 )
-import os
-
+from lib.utils import load_torch_model
+from lib.utils import load_torch_model as download_model_from_url
 
 if not os.path.isfile(MODEL_PATH):
     download_model_from_url(

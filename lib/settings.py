@@ -2,7 +2,6 @@ import os
 from typing import Tuple
 import torch
 
-
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 VOLUME_DIR = os.path.join(os.path.dirname(ROOT_DIR), "data")
 
@@ -24,7 +23,7 @@ IMAGE_SIZE = 224
 FAISS_INDEX_PATH = os.path.join(VOLUME_DIR, "faiss_index.index")
 
 MODEL_NAME = "vitl14_336px_unicom"
-MODEL_URL = "https://disk.yandex.ru/d/utcWEJ-STv0OsQ" #"https://disk.yandex.ru/d/K7ozxAlGlPanlw"
+MODEL_URL = "https://disk.yandex.ru/d/utcWEJ-STv0OsQ"
 MODEL_FILE = "extractor.pth"
 MODEL_PATH = os.path.join(VOLUME_DIR, MODEL_FILE)
 CSV_PATH = os.path.join(VOLUME_DIR, "avito_images.csv")

@@ -1,8 +1,8 @@
-from io import BytesIO
 import os
-from PIL import Image
+from io import BytesIO
 import requests
 import torch
+from PIL import Image
 
 
 def get_bytes_image(
