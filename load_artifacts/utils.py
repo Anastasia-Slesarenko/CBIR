@@ -3,11 +3,11 @@ import sys
 sys.path.append("../")
 
 import pandas as pd
-from torch.nn import Module
 from tqdm import tqdm
+from torch.nn import Module
+from lib.model import extract_features_from_images
 from lib.db import Storage
 from lib.faiss_search import train_faiss_index
-from lib.model import extract_features_from_images
 from lib.utils import read_list_images
 
 
@@ -49,10 +49,10 @@ def prepare_search_db(
         )
         features_galleries = [
             (
-                int(df[col_image_id].iloc[i]),
+                int(df[col_image_id].iloc[batch + i]),
                 features_galleries[i].tolist(),
-                df[col_item_url].iloc[i],
-                df[col_title].iloc[i],
+                df[col_item_url].iloc[batch + i],
+                df[col_title].iloc[batch + i],
             )
             for i in range(features_galleries.shape[0])
         ]
