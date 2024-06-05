@@ -13,4 +13,4 @@ RUN python -m pip install --no-cache-dir -r requirements-test.txt
 
 COPY . /app
 
-CMD ["python", "tests/", "--show-capture=all", "-W", "ignore::DeprecationWarning"]
+CMD ["pytest", "-vv", "tests/", "--show-capture=all", "-W", "ignore::DeprecationWarning"]

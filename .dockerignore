@@ -6,6 +6,7 @@
 /venv
 .vscode
 /load_articats
+volume_pgsql/
 data/
 **.csv
 !tests/test.csv

@@ -15,10 +15,10 @@ from load_artifacts.utils import prepare_search_db
 async def test_init_db(mock_storage: Storage):
     prepare_search_db(
         storage=mock_storage,
-        image_path="./gallery_images_test",
+        image_path="/app/tests/gallery_images_test",
         image_format=IMAGE_FORMAT,
         model_pth=MODEL_PATH,
-        csv_path="./test.csv",
+        csv_path="/app/tests/test.csv",
         faiss_index_path=FAISS_INDEX_PATH,
         device="cpu",
     )
@@ -59,7 +59,7 @@ async def test_find_simular_images_invalid_format(ac: AsyncClient):
 
 @pytest.mark.order(5)
 async def test_find_simular_images_valid_format(ac: AsyncClient):
-    with open("query_image_test.jpg", "rb") as f:
+    with open("/app/tests/query_image_test.jpg", "rb") as f:
         response = await ac.post(
             "/find_simular_images", files={"image": f}
         )

@@ -17,5 +17,7 @@ services:
     build:
       context: .
       dockerfile: ./tests/Dockerfile
+    environment:
+      - HOSTNAME=postgres
     depends_on:
       - postgres

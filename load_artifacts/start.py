@@ -2,7 +2,7 @@ import sys
 
 sys.path.append("../")
 
-from .utils import prepare_search_db
+from utils import prepare_search_db
 from lib.db import Storage
 from lib.settings import (
     HOSTNAME,

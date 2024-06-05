@@ -3,16 +3,17 @@ version: '3.3'
 services:
   postgres:
     container_name: postgres-service
-    image: postgres:latest
+    image: postgres:16
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=db
+      - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
-    # volumes:
-    #   - ./volume_pgsql:/var/lib/postgresql/data
+    volumes:
+      - ./volume_pgsql:/var/lib/postgresql/data/pgdata
 
   retrieval_service:
     container_name: retrieval-service
@@ -29,3 +30,7 @@ services:
       - ./data:/app/data
     depends_on:
       - postgres
+
+volumes:
+  volume_pgsql:
+  data:

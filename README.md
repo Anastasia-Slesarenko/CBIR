@@ -10,8 +10,13 @@ Triplet A
 ## Команда проекта
 Слесаренко Анастасия
 
-## Запуск сервисов в продакшен режиме
-### 1. Запуск и настройка FastAPI, PostgreSQL в Docker контейнерах
+## Запуск сервиса в продакшен режиме
+### 1.1. Запуск с подготовленной базой данных и индексами FAISS
+```bash
+cd CBIR/load_artifacts && source setup.sh
+```
+
+### 1.2. Запуск с пустой базой данных
 ```bash
 docker-compose -f docker-compose.yml up --build -d
 ```
@@ -26,25 +31,7 @@ docker-compose -f docker-compose.yml down --remove-orphans
 ```bash
 docker-compose -f docker-compose-dev.yml up --build -d
 ```
-
-### 2. Создание и активация виртуального окружения в `venv` и установка всех библиотек
-```
-pip install -r requirements-dev.txt
-```
-
-### 3. Запуск приложения FastAPI:
-```bash
-fastapi dev app.py
-```
-### 4. Остановка приложения FastAPI с помощью Ctrl+C
-
-### 5. Остановка и удаление Docker сервисов
+### 2. Остановка и удаление Docker сервисов
 ```
 docker-compose -f docker-compose-dev.yml down --remove-orphans
-```
-
-## Запуск pytest
-Запуск всех тестов pytest в tests/:
-```
-pytest -vv tests/ --show-capture=all -W ignore::DeprecationWarning
 ```
