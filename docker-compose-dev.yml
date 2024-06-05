@@ -11,3 +11,11 @@ services:
       - POSTGRES_DB=db
     ports:
       - "5432:5432"
+
+  retrieval_service_test:
+    container_name: retrieval-service-test
+    build:
+      context: .
+      dockerfile: ./tests/Dockerfile
+    depends_on:
+      - postgres

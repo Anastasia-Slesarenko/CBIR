@@ -21,6 +21,12 @@ class Storage:
             dbname=database,
         )
 
+    def disconnect(self):
+        """
+        Close all pools
+        """
+        self._pool.closeall()
+
     def get_connection(self):
         """
         Retrieves a connection from the connection pool.
@@ -33,7 +39,7 @@ class Storage:
 
     def create_tables_structure(self) -> None:
         """
-        Creates the image_descriptor table in the database if it does not exist.
+        Creates the image_descriptor table in the database if it does not exist
         """
         create_table_query = """
             CREATE TABLE IF NOT EXISTS image_descriptor (
@@ -43,7 +49,8 @@ class Storage:
                 item_url TEXT NOT NULL,
                 title TEXT NOT NULL
             );
-            CREATE INDEX IF NOT EXISTS image_id_btree ON image_descriptor (image_id);
+            CREATE INDEX IF NOT EXISTS image_id_btree
+            ON image_descriptor (image_id);
         """
         connection = self.get_connection()
         with connection.cursor() as cursor:
@@ -82,9 +89,10 @@ class Storage:
 
     def get_batch_from_pg(
         self, limit: int, offset: int
-    ) -> tuple[list, np.array]:
+    ) -> tuple[np.array, np.array]:
         """
-        Gives a batch of image embeddings and their ids from the image_descriptor table.
+        Gives a batch of image embeddings and
+        their ids from the image_descriptor table.
         """
         query = """
             SELECT image_id, embedding
@@ -105,7 +113,7 @@ class Storage:
     def get_all_emb_from_pg(
         self,
         batch_size: int,
-    ) -> Generator[np.array, None, None]:
+    ) -> Generator[tuple, None, None]:
         """
         A generator that retrieves embeddings from the database in batches.
         """
@@ -115,10 +123,10 @@ class Storage:
 
     def get_image_by_index(self, index_list: list[int]) -> list[str]:
         """
-        Retrieves image_ids from the database with item_url and 
+        Retrieves image_ids from the database with item_url and
         their titles by index and gives them in the specified order.
         """
-        placeholders = ', '.join(['%s'] * len(index_list))
+        placeholders = ", ".join(["%s"] * len(index_list))
         query = f"""(
             SELECT
                 image_id,

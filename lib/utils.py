@@ -1,32 +1,56 @@
-from .loaders import get_bytes_image
-from .settings import IMAGE_PATH, IMAGE_FORMAT, FAISS_INDEX_PATH
+from io import BytesIO
+import os
 from PIL import Image
-from .model import extract_features_from_image
-from .faiss_search import get_similar_images
-from .db import Storage
-import base64
-from fastapi import Request
+import requests
+import torch
 
 
-def build_html(
-    image: Image.Image, storage: Storage, request: Request
-) -> dict:
-    """По входящему изображению находит похожие картинки и собирает бинарники картинок,
-    названия и ссылки на объявления в словарь для формирования html"""
-    main_image = base64.b64encode(image.getvalue()).decode("utf-8")
-    html_data = {
-        "request": request,
-        "image0": main_image,
-    }
-    for i in range(1, 9):
-        # read image
-        html_data[f"image{i}"] = base64.b64encode(
-            get_bytes_image(
-                file=candidates[i - 1][0],
-                image_path=IMAGE_PATH,
-                image_format=IMAGE_FORMAT,
-            )
-        ).decode("utf-8")
-        html_data[f"href{i}"] = candidates[i - 1][1]
-        html_data[f"title{i}"] = candidates[i - 1][2]
-    return html_data
+def get_bytes_image(
+    file: int,
+    image_path: str,
+    image_format: str,
+) -> BytesIO:
+    """
+    Loads similar images from storage and converts
+    them to bytes for display in HTML.
+    """
+    img = Image.open(os.path.join(image_path, str(file) + image_format))
+    with BytesIO() as output:
+        img.save(output, format="PNG")
+        bytes_array = output.getvalue()
+    return bytes_array
+
+
+def read_list_images(
+    image_sources: list[int],
+    image_path: str,
+    image_format: str,
+) -> list[Image.Image]:
+    """
+    Loads a list of images from storage to extract their embeddings.
+    """
+    images = []
+    for file in image_sources:
+        images.append(
+            Image.open(os.path.join(image_path, str(file) + image_format))
+        )
+    return images
+
+
+def load_torch_model(
+    yadisk_model_url: str,
+    yadisk_api_endpoint: str,
+    model_dir: str,
+    file_name: str,
+) -> None:
+    """
+    Downloads a Torch model from Yandex Disk.
+    """
+    responce = requests.get(yadisk_api_endpoint.format(yadisk_model_url))
+    download_link = responce.json()["href"]
+    torch.hub.load_state_dict_from_url(
+        url=download_link,
+        model_dir=model_dir,
+        file_name=file_name,
+    )
+    return None

@@ -1,14 +1,13 @@
 import sys
 
-sys.path.append("../")
+# sys.path.append("../")
 
 import pandas as pd
-import torch
 from tqdm import tqdm
 from lib.model import extract_features_from_images
 from lib.db import Storage
 from lib.faiss_search import train_faiss_index
-from lib.loaders import read_list_images
+from lib.utils import read_list_images
 from lib.settings import (
     HOSTNAME,
     USERNAME,
@@ -16,17 +15,20 @@ from lib.settings import (
     DATABASE_NAME,
     PORT,
     IMAGE_FORMAT,
-    IMAGE_PATH, 
+    IMAGE_PATH,
     MODEL_PATH,
+    CSV_PATH,
     FAISS_INDEX_PATH,
+    DEVICE,
 )
 
 
-def prepare_search_retrieval_db(
+def prepare_search_db(
     storage: Storage,
     image_path: str,
     image_format: str,
     csv_path: str,
+    model_pth: str,
     faiss_index_path: str,
     device: str,
     batch_size: int = 64,
@@ -36,9 +38,10 @@ def prepare_search_retrieval_db(
     col_title: str = "title",
 ) -> None:
     """
-    Prepares a database and search indexes for a similar image search application:
-    creates a table based on the input data, calculates the embedding of images
-    and writes them to the table. After that, it creates faiss indexes for the search.
+    Prepares a database and search indexes for a similar image search
+    application: creates a table based on the input data, calculates
+    the embedding of images and writes them to the table. After that,
+    it creates faiss indexes for the search.
     """
     # Create table, get embedding and insert data
     storage.create_tables_structure()
@@ -52,7 +55,9 @@ def prepare_search_retrieval_db(
             image_format=image_format,
         )
         features_galleries = extract_features_from_images(
-            image_batch, device=device
+            image_batch,
+            device=device,
+            model_pth=model_pth,
         )
         features_galleries = [
             (
@@ -75,10 +80,6 @@ def prepare_search_retrieval_db(
 
 
 if __name__ == "__main__":
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-
-    csv_path = "../data/avito_images.csv"
 
     storage = Storage(
         host=HOSTNAME,
@@ -87,14 +88,15 @@ if __name__ == "__main__":
         database=DATABASE_NAME,
         port=PORT,
     )
-    prepare_search_retrieval_db(
+    prepare_search_db(
         storage=storage,
         image_path=IMAGE_PATH,
         image_format=IMAGE_FORMAT,
-        csv_path=csv_path,
+        model_pth=MODEL_PATH,
+        csv_path=CSV_PATH,
         faiss_index_path=FAISS_INDEX_PATH,
-        device=device,
+        device=DEVICE,
     )
-    print("=====================================================")
-    print("finish")
-    print("=====================================================")
+    print("=" * 52)
+    print("The database is ready to search for similar images.")
+    print("=" * 52)

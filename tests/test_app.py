@@ -1,44 +1,47 @@
 import pytest
 from httpx import AsyncClient
-from lib.db import Storage
 import os
 from bs4 import BeautifulSoup
+from lib.settings import (
+    IMAGE_FORMAT,
+    MODEL_PATH,
+    FAISS_INDEX_PATH,
+)
+from lib.db import Storage
+from load_artifacts import prepare_search_db
 
 
-test_csv_pg = "tests/test.csv"
-test_image = "tests/query_image_test.jpg"
-
-
-@pytest.mark.order(2)
-async def test_add_data_to_pg(ac: AsyncClient, mock_storage: Storage):
-    with open(test_csv_pg, "rb") as fp:
-        response = await ac.post(
-            "/create_and_insert_pg", files={"data": fp}
-        )
-    # test response
-    assert response.status_code == 200, response.json()
-    assert response.json()["message"] == "ok", response.json()
+@pytest.mark.order(1)
+async def test_init_db(mock_storage: Storage):
+    prepare_search_db(
+        storage=mock_storage,
+        image_path="./gallery_images_test",
+        image_format=IMAGE_FORMAT,
+        model_pth=MODEL_PATH,
+        csv_path="./test.csv",
+        faiss_index_path=FAISS_INDEX_PATH,
+        device="cpu",
+    )
     # test load to postgresql
     pg_rows = mock_storage.count_rows()
     assert pg_rows == 24, "No data has been added"
 
 
-@pytest.mark.order(3)
-async def test_reindex_faiss(ac: AsyncClient):
-    response = await ac.get("/train_faiss")
-    # test response
-    assert response.status_code == 200, response.json()
-    assert response.json()["message"] == "ok", response.json()
-
-
-@pytest.mark.order(4)
+@pytest.mark.order(2)
 async def test_main_page(ac: AsyncClient):
     response = await ac.get("/")
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
 
 
-@pytest.mark.order(5)
+@pytest.mark.order(3)
+async def test_main_page(ac: AsyncClient):
+    response = await ac.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+
+
+@pytest.mark.order(4)
 async def test_find_simular_images_invalid_format(ac: AsyncClient):
     file_path = "test.txt"  # invalid format file
     with open(file_path, "w") as f:
@@ -54,9 +57,9 @@ async def test_find_simular_images_invalid_format(ac: AsyncClient):
     os.remove(file_path)
 
 
-@pytest.mark.order(6)
+@pytest.mark.order(5)
 async def test_find_simular_images_valid_format(ac: AsyncClient):
-    with open(test_image, "rb") as f:
+    with open("query_image_test.jpg", "rb") as f:
         response = await ac.post(
             "/find_simular_images", files={"image": f}
         )
