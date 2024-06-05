@@ -1,5 +1,4 @@
 import pytest
-from httpx import AsyncClient
 import os
 from bs4 import BeautifulSoup
 from lib.settings import (
@@ -9,10 +8,11 @@ from lib.settings import (
 )
 from lib.db import Storage
 from load_artifacts.utils import prepare_search_db
+from .conftest import client
 
 
 @pytest.mark.order(1)
-async def test_init_db(mock_storage: Storage):
+def test_init_db(mock_storage: Storage):
     prepare_search_db(
         storage=mock_storage,
         image_path="/app/tests/gallery_images_test",
@@ -28,27 +28,20 @@ async def test_init_db(mock_storage: Storage):
 
 
 @pytest.mark.order(2)
-async def test_main_page(ac: AsyncClient):
-    response = await ac.get("/")
+def test_main_page():
+    response = client.get("/")
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
 
 
 @pytest.mark.order(3)
-async def test_main_page(ac: AsyncClient):
-    response = await ac.get("/")
-    assert response.status_code == 200
-    assert "text/html" in response.headers["content-type"]
-
-
-@pytest.mark.order(4)
-async def test_find_simular_images_invalid_format(ac: AsyncClient):
+def test_find_simular_images_invalid_format():
     file_path = "test.txt"  # invalid format file
     with open(file_path, "w") as f:
         f.write("This is a test file with invalid format")
 
     with open(file_path, "rb") as f:
-        response = await ac.post(
+        response = client.post(
             "/find_simular_images", files={"image": f}
         )
 
@@ -58,9 +51,9 @@ async def test_find_simular_images_invalid_format(ac: AsyncClient):
 
 
 @pytest.mark.order(5)
-async def test_find_simular_images_valid_format(ac: AsyncClient):
+def test_find_simular_images_valid_format():
     with open("/app/tests/query_image_test.jpg", "rb") as f:
-        response = await ac.post(
+        response = client.post(
             "/find_simular_images", files={"image": f}
         )
 
