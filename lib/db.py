@@ -1,9 +1,9 @@
 import logging
 from typing import Generator
-from psycopg2.extras import execute_values
-from psycopg2 import Error
-from psycopg2.pool import SimpleConnectionPool
 import numpy as np
+from psycopg2 import Error
+from psycopg2.extras import execute_values
+from psycopg2.pool import SimpleConnectionPool
 
 
 class Storage:

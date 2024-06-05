@@ -1,12 +1,8 @@
-import pytest
 import os
+import pytest
 from bs4 import BeautifulSoup
-from lib.settings import (
-    IMAGE_FORMAT,
-    MODEL_PATH,
-    FAISS_INDEX_PATH,
-)
 from lib.db import Storage
+from lib.settings import FAISS_INDEX_PATH, IMAGE_FORMAT, MODEL_PATH
 from load_artifacts.utils import prepare_search_db
 from .conftest import client
 
@@ -41,9 +37,7 @@ def test_find_simular_images_invalid_format():
         f.write("This is a test file with invalid format")
 
     with open(file_path, "rb") as f:
-        response = client.post(
-            "/find_simular_images", files={"image": f}
-        )
+        response = client.post("/find_simular_images", files={"image": f})
 
     assert response.status_code == 400, response.status_code
     assert "Неправильный формат картинки" in response.text
@@ -53,9 +47,7 @@ def test_find_simular_images_invalid_format():
 @pytest.mark.order(5)
 def test_find_simular_images_valid_format():
     with open("/app/tests/query_image_test.jpg", "rb") as f:
-        response = client.post(
-            "/find_simular_images", files={"image": f}
-        )
+        response = client.post("/find_simular_images", files={"image": f})
 
     assert response.status_code == 200
 

@@ -56,7 +56,7 @@ if __name__ == "__main__":
         )
     )
 # 20k images
-# Total requests made: 176                                                                                                                              
+# Total requests made: 176
 # Successful requests made: 176
 # Average response time, s: 0.34
 # Requests Per Second (RPS): 2.93

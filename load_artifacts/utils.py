@@ -3,11 +3,11 @@ import sys
 sys.path.append("../")
 
 import pandas as pd
-from tqdm import tqdm
 from torch.nn import Module
-from lib.model import extract_features_from_images
+from tqdm import tqdm
 from lib.db import Storage
 from lib.faiss_search import train_faiss_index
+from lib.model import extract_features_from_images
 from lib.utils import read_list_images
 
 

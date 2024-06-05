@@ -1,6 +1,6 @@
 import base64
-from PIL import Image
 from fastapi import Request
+from PIL import Image
 from .utils import get_bytes_image
 
 

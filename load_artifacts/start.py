@@ -3,28 +3,27 @@ import sys
 sys.path.append("../")
 
 import os
+from torch import load as torch_model_load
 from utils import prepare_search_db
-from lib.utils import load_torch_model
 from lib.db import Storage
 from lib.settings import (
-    HOSTNAME,
-    USERNAME,
-    PASSWORD,
+    CSV_PATH,
     DATABASE_NAME,
-    PORT,
+    DEVICE,
+    FAISS_INDEX_PATH,
+    HOSTNAME,
     IMAGE_FORMAT,
     IMAGE_PATH,
+    MODEL_FILE,
     MODEL_PATH,
-    CSV_PATH,
-    FAISS_INDEX_PATH,
-    DEVICE,
     MODEL_URL,
-    YADISK_API_ENDPOINT,
+    PASSWORD,
+    PORT,
+    USERNAME,
     VOLUME_DIR,
-    MODEL_FILE
+    YADISK_API_ENDPOINT,
 )
-from torch import load as torch_model_load
-
+from lib.utils import load_torch_model
 
 if __name__ == "__main__":
     if not os.path.isfile(MODEL_PATH):

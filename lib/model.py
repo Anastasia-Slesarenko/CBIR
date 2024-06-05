@@ -1,14 +1,13 @@
-from albumentations import Compose as aCompose
 from io import BytesIO
-import torch
-from torchvision.transforms import Normalize, ToTensor, Resize
-from torchvision.transforms import Compose as tCompose
-from torch import Tensor
-from PIL import Image
-from .settings import IMAGE_SIZE, MEAN, STD, TNormParam, MODEL_NAME
-from oml.registry.transforms import get_transforms_for_pretrained
 from typing import Union
-
+import torch
+from albumentations import Compose as aCompose
+from oml.registry.transforms import get_transforms_for_pretrained
+from PIL import Image
+from torch import Tensor
+from torchvision.transforms import Compose as tCompose
+from torchvision.transforms import Normalize, Resize, ToTensor
+from .settings import IMAGE_SIZE, MEAN, MODEL_NAME, STD, TNormParam
 
 TTransforms = Union[aCompose, tCompose]
 
@@ -30,7 +29,8 @@ def get_normalisation_resize_torch(
 
 def oml_transform(model_name: str) -> TTransforms:
     """
-    Transforms images by resizing, converting to tensor, and normalizing from pretrain model 
+    Transforms images by resizing, converting to tensor
+    and normalizing from pretrain model
     """
     transforms, _ = get_transforms_for_pretrained(model_name)
     return transforms
