@@ -8,7 +8,7 @@ from lib.settings import (
     FAISS_INDEX_PATH,
 )
 from lib.db import Storage
-from load_artifacts import prepare_search_db
+from load_artifacts.utils import prepare_search_db
 
 
 @pytest.mark.order(1)
