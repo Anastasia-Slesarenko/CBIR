@@ -8,11 +8,12 @@ from fastapi import FastAPI, UploadFile, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from torch import load as torch_model_load
 from .db import Storage
 from .faiss_search import get_similar_images
 from .model import extract_features_from_image
 from .html_builder import build_html
-from .utils import load_torch_model
+from .utils import load_torch_model as download_model_from_url
 from .settings import (
     HOSTNAME,
     USERNAME,
@@ -39,12 +40,13 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
     Preparing before Starting the app.
-    Downloading model, if it doesn't exist and initializing storage.
+    Downloading model, if it doesn't exist
+    Initializing ML model and storage.
     """
     # Downloading model
     if not os.path.isfile(MODEL_PATH):
         try:
-            load_torch_model(
+            download_model_from_url(
                 yadisk_model_url=MODEL_URL,
                 yadisk_api_endpoint=YADISK_API_ENDPOINT,
                 model_dir=VOLUME_DIR,
@@ -55,6 +57,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             logger.error("Error downloading model: %s", e)
             logger.info("Shutting down the application...")
             sys.exit(1)
+    # Initializing model
+    app.state.model = torch_model_load(MODEL_PATH).to(DEVICE)
     # Initializing storage
     app.state.storage = Storage(
         host=HOSTNAME,
@@ -128,7 +132,7 @@ def find_simular_images(
         query_emb = extract_features_from_image(
             image=image,
             device=DEVICE,
-            model_pth=MODEL_PATH,
+            model=request.app.state.model,
         )
         candidates = get_similar_images(
             storage=request.app.state.storage,

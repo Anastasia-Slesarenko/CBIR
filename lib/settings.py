@@ -22,7 +22,9 @@ STD: TNormParam = (0.229, 0.224, 0.225)
 IMAGE_SIZE = 224
 
 FAISS_INDEX_PATH = os.path.join(VOLUME_DIR, "faiss_index.index")
-MODEL_URL = "https://disk.yandex.ru/d/K7ozxAlGlPanlw"
+
+MODEL_NAME = "vitl14_336px_unicom"
+MODEL_URL = "https://disk.yandex.ru/d/utcWEJ-STv0OsQ" #"https://disk.yandex.ru/d/K7ozxAlGlPanlw"
 MODEL_FILE = "extractor.pth"
 MODEL_PATH = os.path.join(VOLUME_DIR, MODEL_FILE)
 CSV_PATH = os.path.join(VOLUME_DIR, "avito_images.csv")

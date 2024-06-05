@@ -26,12 +26,12 @@ docker-compose -f docker-compose.yml up --build -d
 docker-compose -f docker-compose.yml down --remove-orphans
 ```
 
-## Запуск сервиса в режиме разработки
+## Запуск сервиса для тестирования
 ### 1. Запуск и настройка PostgreSQL в Docker контейнерах
 ```bash
-docker-compose -f docker-compose-dev.yml up --build -d
+docker-compose -f docker-compose-test.yml up --build -d
 ```
 ### 2. Остановка и удаление Docker сервисов
-```
-docker-compose -f docker-compose-dev.yml down --remove-orphans
+```bash
+docker-compose -f docker-compose-test.yml down --remove-orphans
 ```

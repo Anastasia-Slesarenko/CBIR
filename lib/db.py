@@ -44,7 +44,7 @@ class Storage:
         create_table_query = """
             CREATE TABLE IF NOT EXISTS image_descriptor (
                 id SERIAL PRIMARY KEY,
-                image_id INT NOT NULL,
+                image_id BIGINT NOT NULL,
                 embedding FLOAT ARRAY NOT NULL,
                 item_url TEXT NOT NULL,
                 title TEXT NOT NULL

@@ -4,6 +4,7 @@ sys.path.append("../")
 
 import pandas as pd
 from tqdm import tqdm
+from torch.nn import Module
 from lib.model import extract_features_from_images
 from lib.db import Storage
 from lib.faiss_search import train_faiss_index
@@ -15,7 +16,7 @@ def prepare_search_db(
     image_path: str,
     image_format: str,
     csv_path: str,
-    model_pth: str,
+    model: Module,
     faiss_index_path: str,
     device: str,
     batch_size: int = 64,
@@ -44,7 +45,7 @@ def prepare_search_db(
         features_galleries = extract_features_from_images(
             image_batch,
             device=device,
-            model_pth=model_pth,
+            model=model,
         )
         features_galleries = [
             (
