@@ -19,5 +19,7 @@ services:
       dockerfile: ./tests/Dockerfile
     environment:
       - HOSTNAME=postgres
+    volumes:
+      - ./data:/app/data
     depends_on:
       - postgres

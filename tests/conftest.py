@@ -21,6 +21,13 @@ from lib.settings import (
 import os
 
 
+app.state.storage = Storage(
+    host=HOSTNAME,
+    user=USERNAME,
+    password=PASSWORD,
+    database=DATABASE_NAME,
+    port=PORT,
+)
 client = TestClient(app, base_url="http://")
 
 if not os.path.isfile(MODEL_PATH):
@@ -37,12 +44,6 @@ def event_loop(request):
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
-
-
-@pytest.fixture(scope="session")
-async def ac() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url="http://") as ac:
-        yield ac
 
 
 @pytest.fixture(scope="session", autouse=True)
