@@ -5,16 +5,31 @@ from typing import AsyncGenerator
 import pytest
 from lib.app import app
 from lib.db import Storage
+from lib.utils import load_torch_model
 from lib.settings import (
     HOSTNAME,
     USERNAME,
     PASSWORD,
     DATABASE_NAME,
     PORT,
+    VOLUME_DIR,
+    MODEL_FILE,
+    MODEL_PATH,
+    YADISK_API_ENDPOINT,
+    MODEL_URL,
 )
+import os
 
 
 client = TestClient(app, base_url="http://")
+
+if not os.path.isfile(MODEL_PATH):
+    load_torch_model(
+        yadisk_model_url=MODEL_URL,
+        yadisk_api_endpoint=YADISK_API_ENDPOINT,
+        model_dir=VOLUME_DIR,
+        file_name=MODEL_FILE,
+    )
 
 
 @pytest.fixture(scope="session")
