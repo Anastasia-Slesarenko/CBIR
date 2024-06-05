@@ -97,7 +97,7 @@ class Storage:
         query = """
             SELECT image_id, embedding
             FROM image_descriptor
-            ORDER BY id
+            ORDER BY image_id
             LIMIT %s
             OFFSET %s;
         """
