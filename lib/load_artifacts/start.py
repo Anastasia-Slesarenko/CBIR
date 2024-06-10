@@ -46,7 +46,7 @@ if __name__ == "__main__":
             model_dir=VOLUME_DIR,
             file_name=MODEL_FILE,
         )
-    print(HOSTNAME)
+
     storage = Storage(
         host=HOSTNAME,
         user=USERNAME,
