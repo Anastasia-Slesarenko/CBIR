@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "493c22d6-73c3-409c-b325-d43af35ea49b",
+		"_postman_id": "8af187e7-7b5e-4d8f-a9a8-f5be727087aa",
 		"name": "FastAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34021955"
@@ -190,7 +190,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "/158.160.64.37",
+			"value": "158.160.64.37",
 			"type": "string"
 		}
 	]

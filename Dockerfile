@@ -13,18 +13,4 @@ RUN python -m pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
 
-EXPOSE 8000
-CMD ["python", "./main.py"]
-
-
-
-# RUN mkdir /app
-
-# WORKDIR /app
-
-# RUN python -m pip install fastapi==0.111.0
-
-# COPY . /app
-
-# EXPOSE 8000
-# CMD ["fastapi", "run", "./bin/test.py"]
+CMD ["/bin/bash", "-c", "python ./lib/load_artifacts/start.py;python ./main.py"]

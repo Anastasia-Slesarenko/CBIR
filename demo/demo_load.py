@@ -1,7 +1,15 @@
+import os
+import sys
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+)
+
 import asyncio
 import time
 import aiohttp
 import numpy as np
+from lib.settings import VM_IP
 
 
 async def send_image_request(session, url, image_path):
@@ -51,7 +59,7 @@ if __name__ == "__main__":
 
     asyncio.run(
         load_test(
-            "http://158.160.64.37/find_simular_images",
+            f"http://{VM_IP}/find_similar_image_urls_by_image",
             "tests/query_image_test.jpg",
         )
     )

@@ -72,6 +72,24 @@ class Storage:
             connection.commit()
         self._pool.putconn(connection)
 
+    def check_table_exist(self) -> bool:
+        """
+        Check if image_descriptor table exist.
+        """
+        query = """
+            SELECT exists(
+                SELECT *
+                FROM information_schema.tables
+                where table_name = 'image_descriptor'
+            );
+        """
+        connection = self.get_connection()
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            res = cursor.fetchone()
+        self._pool.putconn(connection)
+        return res[0]
+
     def count_rows(self) -> int:
         """
         Counts the number of rows in the image_descriptor table.

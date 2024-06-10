@@ -21,9 +21,6 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    environment:
-      - HOSTNAME=postgres
-      - MODEL_URL="https://disk.yandex.ru/d/K7ozxAlGlPanlw"
     ports:
       - "80:8000"
     volumes:

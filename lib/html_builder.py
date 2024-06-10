@@ -23,7 +23,7 @@ def build_html(
         # read image
         html_data[f"image{i}"] = base64.b64encode(
             get_bytes_image(
-                file=candidates[i - 1][0],
+                image_id=candidates[i - 1][0],
                 image_path=image_path,
                 image_format=image_format,
             )

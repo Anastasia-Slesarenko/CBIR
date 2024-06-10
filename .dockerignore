@@ -5,11 +5,9 @@
 .pytest_cache
 /venv
 .vscode
-/load_articats
 volume_pgsql/
 data/
 **.csv
-!tests/test.csv
 **.index
 **.tar
 **.zip

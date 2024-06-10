@@ -8,6 +8,7 @@ from torch import Tensor
 from torchvision.transforms import Compose as tCompose
 from .settings import MODEL_NAME
 
+
 TTransforms = Union[aCompose, tCompose]
 
 

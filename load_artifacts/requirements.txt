@@ -1,7 +1,0 @@
-psycopg2-binary==2.9.9
-faiss_cpu==1.8.0
-pillow==10.3.0
-torchvision==0.15
-open-metric-learning==2.0.0
-pandas
-tqdm
