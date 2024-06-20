@@ -9,3 +9,13 @@ Triplet A
 
 ## Команда проекта
 Слесаренко Анастасия
+
+## Запуск сервиса в продакшен режиме
+### 1. Запуск с подготовленной базой данных и индексами FAISS
+```bash
+docker-compose -f docker-compose.yml up --build -d
+```
+### 2. Остановка и удаление Docker сервисов
+```bash
+docker-compose -f docker-compose.yml down --remove-orphans
+```

@@ -1,0 +1,11 @@
+__pycache__/
+data/
+volume_pgsql/
+venv/
+**.pth
+**.csv
+!tests/test.csv
+**.index
+**.tar
+.pytest_cache
+**.env

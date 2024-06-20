@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Avito AAA</title>
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .thumbnail {
+      width: 224px;
+      height: 224px;
+    }
+  </style>
+</head>
+
+<body class="d-flex flex-column h-100">
+  <nav class="navbar bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <img src="/static/avito.svg" />
+      </a>
+    </div>
+  </nav>
+
+  <h1 class="fs-1 fw-bold display-1 text-center mb-3">Поиск похожих товаров по изображению</h1>
+
+  {% if error %}
+  <div class="container col-8">
+    <div class="alert alert-danger" role="alert">
+      <p class="fs-3 text-center mb-3">{{error_code}}</p>
+      <p class="fs-4 text-center mb-3">{{error}}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="container mb-3 col-8">
+    <form method="post" action="/find_similar_images_by_image" class="border border-2 p-3 rounded-3"
+      enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Загрузите изображение в формате .jpg для поиска похожих товаров</label>
+        <input class="form-control" type="file" id="formFile" name="image">
+      </div>
+      <button type="submit" class="btn btn-primary">Найти похожее</button>
+    </form>
+  </div>
+
+  {% if image0 %}
+  <div class="container text-center mb-3 col-8">
+    <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image0 }}" />
+  </div>
+  <p class="fs-1 text-center mb-3">Похожие товары</p>
+  <!-- Three rows with three pictures each -->
+  <div class="container text-center mb-3 col-8">
+    <table style="margin: 0 auto;">
+      <tr>
+        <td class="container col-md-3" style="padding: 10px;">
+          <a class="btn" href="{{href1}}">
+            <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image1 }}" />
+            <p class="fw-bold text-center text-muted">
+              <font color="#008aed">{{title1}}</font>
+            </p>
+          </a>
+        </td>
+        <td class="container col-md-3" style="padding: 10px;">
+          <a class="btn" href="{{href2}}">
+            <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image2 }}" />
+            <p class="fw-bold text-center text-muted">
+              <font color="#008aed">{{title2}}</font>
+            </p>
+          </a>
+        </td>
+        <td class="container col-md-3" style="padding: 10px;">
+          <a class="btn" href="{{href3}}">
+            <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image3 }}" />
+            <p class="fw-bold text-center text-muted">
+              <font color="#008aed">{{title3}}</font>
+            </p>
+          </a>
+        </td>
+        <td class="container col-md-3" style="padding: 10px;">
+          <a class="btn" href="{{href4}}">
+            <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image4 }}" />
+            <p class="fw-bold text-center text-muted">
+              <font color="#008aed">{{title4}}</font>
+            </p>
+          </a>
+        </td>
+        <!-- Add more td elements for additional images -->
+      </tr>
+      <!-- Add more tr elements for additional rows -->
+      <tr>
+        <td class="container col-md-3" style="padding: 10px;">
+          <a class="btn" href="{{href5}}">
+            <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image5 }}" />
+            <p class="fw-bold text-center text-muted">
+              <font color="#008aed">{{title5}}</font>
+            </p>
+          </a>
+        </td>
+        <td class="container col-md-3" style="padding: 10px;">
+          <a class="btn" href="{{href6}}">
+            <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image6 }}" />
+            <p class="fw-bold text-center text-muted">
+              <font color="#008aed">{{title6}}</font>
+            </p>
+          </a>
+        </td>
+        <td class="container col-md-3" style="padding: 10px;">
+          <a class="btn" href="{{href7}}">
+            <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image7 }}" />
+            <p class="fw-bold text-center text-muted">
+              <font color="#008aed">{{title7}}</font>
+            </p>
+          </a>
+        </td>
+        <td class="container col-md-3" style="padding: 10px;">
+          <a class="btn" href="{{href8}}">
+            <img class="img-fluid thumbnail cut-image" src="data:image/jpeg;base64, {{ image8 }}" />
+            <p class="fw-bold text-center text-muted">
+              <font color="#008aed">{{title8}}</font>
+            </p>
+          </a>
+        </td>
+        <!-- Add more td elements for additional images -->
+      </tr>
+    </table>
+  </div>
+  {% endif %}
+
+  <footer class="container mt-5 b-0">
+    <p class=" text-center text-muted">© 2024 Академия Аналитиков Авито</p>
+  </footer>
+</body>
+
+</html>

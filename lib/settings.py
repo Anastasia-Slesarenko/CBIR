@@ -1,0 +1,57 @@
+import os
+from typing import Tuple
+import torch
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+VOLUME_DIR = os.path.join(os.path.dirname(ROOT_DIR), "data")
+DATA_URL = os.environ.get("DATA_URL")
+
+APP_PORT = os.environ.get("APP_PORT", 8000)
+
+VM_IP = os.environ.get("VM_IP", "localhost")
+HOSTNAME = "postgres"
+USERNAME = "postgres"
+PASSWORD = "postgres"
+DATABASE_NAME = "db"
+PORT = 5432
+
+IMAGE_PATH = os.path.join(VOLUME_DIR, "images")
+IMAGE_FORMAT = ".jpg"
+
+# Image Transform Params
+TNormParam = Tuple[float, float, float]
+MEAN: TNormParam = (0.485, 0.456, 0.406)
+STD: TNormParam = (0.229, 0.224, 0.225)
+IMAGE_SIZE = 224
+
+FAISS_INDEX_PATH = os.path.join(VOLUME_DIR, "faiss_index.index")
+
+MODEL_NAME = "vitb32_unicom"
+MODEL_URL = os.environ.get("MODEL_URL")
+MODEL_FILE = "extractor.pth"
+MODEL_PATH = os.path.join(VOLUME_DIR, MODEL_FILE)
+CSV_PATH = os.path.join(VOLUME_DIR, "avito_images.csv")
+EMBED_SIZE = {
+    "vits16": 384,
+    "vitb32_unicom": 512,
+    "vitl14_336px_unicom": 768,
+}
+
+if torch.cuda.is_available():
+    DEVICE = torch.device("cuda")
+else:
+    DEVICE = "cpu"
+
+YADISK_API_ENDPOINT = (
+    "https://cloud-api.yandex.net/v1/disk/public/resources/download"
+    "?public_key={}"
+)
+
+if not os.path.isdir(VOLUME_DIR):
+    os.mkdir(VOLUME_DIR)
+
+TEST_IMAGE = "tests/query_image_test.jpg"
