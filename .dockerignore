@@ -6,6 +6,7 @@
 /venv
 .vscode
 volume_pgsql/
+experiments_with_models/
 data/
 **.csv
 **.index

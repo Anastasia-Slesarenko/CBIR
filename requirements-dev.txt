@@ -10,5 +10,5 @@ faiss_cpu==1.8.0
 pillow==10.3.0
 psycopg2==2.9.9
 pandas
-open-metric-learning==2.1.9
+open-metric-learning==2.1.8
 python-dotenv==1.0.1

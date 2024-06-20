@@ -9,35 +9,46 @@ import asyncio
 import time
 import aiohttp
 import numpy as np
+import random
 from lib.settings import VM_IP
 
 
 async def send_image_request(session, url, image_path):
-    async with aiohttp.ClientSession() as session:
-        # Open the file and read it
-        with open(image_path, "rb") as f:
-            file_data = f.read()
-        # Create FormData and add the file data
-        data = aiohttp.FormData()
-        data.add_field(
-            "image",
-            file_data,
-            filename=image_path,
-            content_type="image/jpeg",
-        )
-        start_time = time.time()
-        async with session.post(url, data=data) as response:
-            return response.status, time.time() - start_time
+    # Open the file and read it
+    with open(image_path, "rb") as f:
+        file_data = f.read()
+    # Create FormData and add the file data
+    data = aiohttp.FormData()
+    data.add_field(
+        "image",
+        file_data,
+        filename=image_path,
+        content_type="image/jpeg",
+    )
+    start_time = time.time()
+    async with session.post(url, data=data) as response:
+        return response.status, time.time() - start_time
 
 
-async def load_test(url, image_path, duration=60):
+async def load_test(url, image_folder, duration=60):
     start_time = time.time()
     request_count = 0
     ok_count = 0
     iter_duration_list = []
 
+    # Get list of image files in the specified folder
+    image_files = [
+        f
+        for f in os.listdir(image_folder)
+        if os.path.isfile(os.path.join(image_folder, f))
+    ]
+
     async with aiohttp.ClientSession() as session:
         while time.time() - start_time < duration:
+            # Choose a random image from the folder
+            image_path = os.path.join(
+                image_folder, random.choice(image_files)
+            )
             status, iter_duration = await send_image_request(
                 session, url, image_path
             )
@@ -51,34 +62,17 @@ async def load_test(url, image_path, duration=60):
     print(f"Successful requests made: {ok_count}")
     print(f"Average response time, s: {np.mean(iter_duration_list)}")
 
+    perc_95 = np.percentile(iter_duration_list, 95)
+    print(f"95th percentile response time, s: {perc_95}")
+
     rps = request_count / total_time_elapsed
     print(f"Requests Per Second (RPS): {rps:.2f}")
 
 
 if __name__ == "__main__":
-
     asyncio.run(
         load_test(
             f"http://{VM_IP}/find_similar_image_urls_by_image",
-            "tests/query_image_test.jpg",
+            "demo/images",  # Specify the folder containing images
         )
     )
-
-# 20k images
-# vits16, emb_size: 384
-# Total requests made: 176
-# Successful requests made: 176
-# Average response time, s: 0.34
-# Requests Per Second (RPS): 2.93
-
-# vitb32_unicom, emb_size: 512,
-# Total requests made: 189
-# Successful requests made: 189
-# Average response time, s: 0.32
-# Requests Per Second (RPS): 3.15
-
-# vitl14_336px_unicom, emb_size: 768
-# Total requests made: 43
-# Successful requests made: 43
-# Average response time, s: 1.4
-# Requests Per Second (RPS): 0.71
