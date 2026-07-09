@@ -6,9 +6,9 @@ services:
     image: postgres:16
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=db
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-db}
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
@@ -23,10 +23,10 @@ services:
       dockerfile: ./Dockerfile
     environment:
       - DB_HOST=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=db
-      - MODEL_URL=https://disk.yandex.ru/d/6U7YaqjrqGDjYQ
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-db}
+      - MODEL_URL=${MODEL_URL:-https://disk.yandex.ru/d/6U7YaqjrqGDjYQ}
     ports:
       - "80:8000"
     volumes:
