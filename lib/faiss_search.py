@@ -10,9 +10,11 @@ def train_faiss_index(
     faiss_index_path: str,
 ) -> None:
     """Initializes FAISS index and saves it."""
-    index = faiss.IndexFlatL2(emb_size)
+    # Inner product over L2-normalized vectors gives cosine similarity.
+    index = faiss.IndexFlatIP(emb_size)
     index_with_map = faiss.IndexIDMap(index)
     for ids, batch in storage.get_all_emb_from_pg(batch_size):
+        faiss.normalize_L2(batch)
         index_with_map.add_with_ids(batch, ids)
     faiss.write_index(index_with_map, faiss_index_path)
 
@@ -28,6 +30,7 @@ def get_similar_images(
     using FAISS index. Return images with urls to ads and titles.
     """
     query_np = query_emb.numpy()
+    faiss.normalize_L2(query_np)
     _, indices = faiss_index.search(query_np, topk)
     ids = [idx for idx in indices[0].tolist() if idx != -1]
     candidates = storage.get_image_by_index(ids)

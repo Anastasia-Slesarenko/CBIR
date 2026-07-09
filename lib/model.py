@@ -1,3 +1,4 @@
+from functools import lru_cache
 from io import BytesIO
 from typing import Union
 import torch
@@ -11,6 +12,7 @@ from .settings import MODEL_NAME
 TTransforms = Union[aCompose, tCompose]
 
 
+@lru_cache(maxsize=1)
 def oml_transform(model_name: str) -> TTransforms:
     """
     Transforms images by resizing, converting to tensor

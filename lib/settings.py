@@ -23,7 +23,9 @@ IMAGE_SIZE = 224
 FAISS_INDEX_PATH = os.path.join(VOLUME_DIR, "faiss_index.index")
 
 MODEL_NAME = "vitb32_unicom"
-MODEL_URL = "https://disk.yandex.ru/d/6U7YaqjrqGDjYQ"
+MODEL_URL = os.environ.get(
+    "MODEL_URL", "https://disk.yandex.ru/d/6U7YaqjrqGDjYQ"
+)
 MODEL_FILE = "extractor.pth"
 MODEL_PATH = os.path.join(VOLUME_DIR, MODEL_FILE)
 CSV_PATH = os.path.join(VOLUME_DIR, "avito_images.csv")

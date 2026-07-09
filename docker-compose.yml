@@ -23,7 +23,7 @@ services:
       dockerfile: ./Dockerfile
     environment:
       - HOSTNAME=postgres
-      - MODEL_URL="https://disk.yandex.ru/d/K7ozxAlGlPanlw"
+      - MODEL_URL=https://disk.yandex.ru/d/6U7YaqjrqGDjYQ
     ports:
       - "80:8000"
     volumes:
