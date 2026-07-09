@@ -77,6 +77,7 @@ Intel Xeon + Tesla T4 16 ГБ ([demo/demo_load.py](demo/demo_load.py)):
 | `POSTGRES_PASSWORD` | пароль PostgreSQL | `postgres` |
 | `POSTGRES_DB` | имя базы | `db` |
 | `MODEL_URL` | публичная ссылка Яндекс.Диска на веса | ссылка в [lib/settings.py](lib/settings.py) |
+| `IMAGE_PATH` | каталог с изображениями товаров | `data/images` |
 
 Все переменные имеют дефолты, поэтому для локального запуска настройка не нужна.
 Чтобы переопределить — скопируйте шаблон [.env.example](.env.example) и отредактируйте;

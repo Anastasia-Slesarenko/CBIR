@@ -22,6 +22,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-db}
+      - IMAGE_PATH=/app/tests/gallery_images_test
     volumes:
       - ./data:/app/data
     depends_on:

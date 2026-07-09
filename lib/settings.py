@@ -11,7 +11,7 @@ PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
 DATABASE_NAME = os.environ.get("POSTGRES_DB", "db")
 PORT = int(os.environ.get("POSTGRES_PORT", "5432"))
 
-IMAGE_PATH = os.path.join(VOLUME_DIR, "images")
+IMAGE_PATH = os.environ.get("IMAGE_PATH", os.path.join(VOLUME_DIR, "images"))
 IMAGE_FORMAT = ".jpg"
 
 # Image Transform Params
