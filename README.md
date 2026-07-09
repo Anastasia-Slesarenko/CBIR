@@ -6,6 +6,8 @@
 
 **Стек:** Python 3.10 · FastAPI · PyTorch · FAISS · PostgreSQL · Docker
 
+[![CI](https://github.com/Anastasia-Slesarenko/CBIR/actions/workflows/ci.yml/badge.svg)](https://github.com/Anastasia-Slesarenko/CBIR/actions/workflows/ci.yml)
+
 ![Демонстрация работы сервиса](docs/demo_cbir.gif)
 
 Дообученный экстрактор Unicom ViT-B/32 даёт **CMC@8 49%** против 41% у базовой
@@ -196,6 +198,10 @@ docker-compose -f docker-compose-test.yml up --build --abort-on-container-exit
 ruff check .
 ruff format .
 ```
+
+Эти же проверки гоняет CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) на
+каждый push в `main`/`design_cleanup` и на pull request: джоба `lint` — `ruff`,
+джоба `test` — весь набор через `docker-compose-test.yml`. Статус — в бейдже вверху.
 
 ## Ограничения
 

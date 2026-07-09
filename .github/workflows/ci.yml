@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main, design_cleanup]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: pip install ruff==0.14.8
+      - run: ruff check .
+      - run: ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests (PostgreSQL + pytest via docker-compose)
+        run: >
+          docker compose -f docker-compose-test.yml up --build
+          --exit-code-from retrieval_service_test
