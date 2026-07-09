@@ -18,7 +18,7 @@ from .settings import (
     DATABASE_NAME,
     DEVICE,
     FAISS_INDEX_PATH,
-    HOSTNAME,
+    DB_HOST,
     IMAGE_FORMAT,
     IMAGE_PATH,
     MODEL_FILE,
@@ -61,7 +61,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     app.state.model = torch_model_load(MODEL_PATH).to(DEVICE)
     # Initializing storage
     app.state.storage = Storage(
-        host=HOSTNAME,
+        host=DB_HOST,
         user=USERNAME,
         password=PASSWORD,
         database=DATABASE_NAME,
@@ -157,9 +157,7 @@ def find_simular_images(
     except Exception as e:
         e_type, _, e_traceback = sys.exc_info()
         e_line_number = e_traceback.tb_lineno
-        e_filename = os.path.split(
-            e_traceback.tb_frame.f_code.co_filename
-        )[1]
+        e_filename = os.path.split(e_traceback.tb_frame.f_code.co_filename)[1]
         logger.error(
             msg=f"{e_type} in file {e_filename} line {e_line_number}: {str(e)}"
         )

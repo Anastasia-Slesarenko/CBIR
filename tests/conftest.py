@@ -8,7 +8,7 @@ from lib.db import Storage
 from lib.settings import (
     DATABASE_NAME,
     DEVICE,
-    HOSTNAME,
+    DB_HOST,
     MODEL_FILE,
     MODEL_PATH,
     MODEL_URL,
@@ -29,7 +29,7 @@ if not os.path.isfile(MODEL_PATH):
     )
 app.state.model = torch_model_load(MODEL_PATH).to(DEVICE)
 app.state.storage = Storage(
-    host=HOSTNAME,
+    host=DB_HOST,
     user=USERNAME,
     password=PASSWORD,
     database=DATABASE_NAME,
@@ -49,7 +49,7 @@ def event_loop(request):
 @pytest.fixture(scope="session", autouse=True)
 def mock_storage():
     storage = Storage(
-        host=HOSTNAME,
+        host=DB_HOST,
         user=USERNAME,
         password=PASSWORD,
         database=DATABASE_NAME,

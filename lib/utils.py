@@ -9,13 +9,13 @@ def get_bytes_image(
     file: int,
     image_path: str,
     image_format: str,
-) -> BytesIO:
+) -> bytes:
     """
     Loads similar images from storage and converts
     them to bytes for display in HTML.
     """
-    img = Image.open(os.path.join(image_path, str(file) + image_format))
-    with BytesIO() as output:
+    path = os.path.join(image_path, str(file) + image_format)
+    with Image.open(path) as img, BytesIO() as output:
         img.save(output, format="PNG")
         bytes_array = output.getvalue()
     return bytes_array
@@ -31,9 +31,9 @@ def read_list_images(
     """
     images = []
     for file in image_sources:
-        images.append(
-            Image.open(os.path.join(image_path, str(file) + image_format))
-        )
+        path = os.path.join(image_path, str(file) + image_format)
+        with Image.open(path) as img:
+            images.append(img.copy())
     return images
 
 

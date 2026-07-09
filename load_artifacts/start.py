@@ -11,7 +11,7 @@ from lib.settings import (
     DATABASE_NAME,
     DEVICE,
     FAISS_INDEX_PATH,
-    HOSTNAME,
+    DB_HOST,
     IMAGE_FORMAT,
     IMAGE_PATH,
     MODEL_FILE,
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     model = torch_model_load(MODEL_PATH).to(DEVICE)
     storage = Storage(
-        host=HOSTNAME,
+        host=DB_HOST,
         user=USERNAME,
         password=PASSWORD,
         database=DATABASE_NAME,

@@ -1,15 +1,4 @@
-# #!/bin/bash
-
-# # Update package list and install necessary packages
-# # Requires Root user rights
-# sudo apt update
-# sudo apt install -y jq curl tar
-# sudo apt-get install -y docker-compose
-# sudo apt install -y software-properties-common
-# sudo add-apt-repository ppa:deadsnakes/ppa
-# sudo apt install -y python3.10
-# sudo apt install -y python3-pip
-# sudo apt install -y python3.10-venv python3.10-distutils
+#!/bin/bash
 
 prestart_path=`pwd`
 project_path="$(dirname "$prestart_path")"

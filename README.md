@@ -70,11 +70,14 @@ Intel Xeon + Tesla T4 16 ГБ ([demo/demo_load.py](demo/demo_load.py)):
 
 | Переменная | Назначение | По умолчанию |
 |---|---|---|
-| `HOSTNAME` | хост PostgreSQL | `localhost` (в Compose — `postgres`) |
+| `DB_HOST` | хост PostgreSQL | `localhost` (в Compose — `postgres`) |
+| `POSTGRES_USER` | пользователь PostgreSQL | `postgres` |
+| `POSTGRES_PASSWORD` | пароль PostgreSQL | `postgres` |
+| `POSTGRES_DB` | имя базы | `db` |
 | `MODEL_URL` | публичная ссылка Яндекс.Диска на веса | ссылка в [lib/settings.py](lib/settings.py) |
 
-Учётные данные PostgreSQL (`postgres` / `postgres`, БД `db`) заданы в
-[lib/settings.py](lib/settings.py).
+Значения по умолчанию совпадают с сервисом `postgres` в Compose — для локального
+запуска ничего задавать не нужно.
 
 ### Запуск сервиса
 

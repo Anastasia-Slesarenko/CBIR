@@ -18,7 +18,10 @@ services:
       context: .
       dockerfile: ./tests/Dockerfile
     environment:
-      - HOSTNAME=postgres
+      - DB_HOST=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db
     volumes:
       - ./data:/app/data
     depends_on:

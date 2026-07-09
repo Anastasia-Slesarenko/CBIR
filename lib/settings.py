@@ -5,11 +5,11 @@ import torch
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 VOLUME_DIR = os.path.join(os.path.dirname(ROOT_DIR), "data")
 
-HOSTNAME = os.environ.get("HOSTNAME", "localhost")
-USERNAME = "postgres"
-PASSWORD = "postgres"
-DATABASE_NAME = "db"
-PORT = 5432
+DB_HOST = os.environ.get("DB_HOST", "localhost")
+USERNAME = os.environ.get("POSTGRES_USER", "postgres")
+PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
+DATABASE_NAME = os.environ.get("POSTGRES_DB", "db")
+PORT = int(os.environ.get("POSTGRES_PORT", "5432"))
 
 IMAGE_PATH = os.path.join(VOLUME_DIR, "images")
 IMAGE_FORMAT = ".jpg"
