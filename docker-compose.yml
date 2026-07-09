@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./volume_pgsql:/var/lib/postgresql/data/pgdata
+      - pgdata:/var/lib/postgresql/data/pgdata
 
   retrieval_service:
     container_name: retrieval-service
@@ -42,5 +42,4 @@ services:
               capabilities: [gpu]
 
 volumes:
-  volume_pgsql:
-  data:
+  pgdata:
