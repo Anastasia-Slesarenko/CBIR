@@ -18,7 +18,6 @@ from lib.settings import (
     VOLUME_DIR,
     YADISK_API_ENDPOINT,
 )
-from lib.utils import load_torch_model
 from lib.utils import load_torch_model as download_model_from_url
 
 if not os.path.isfile(MODEL_PATH):
@@ -36,15 +35,8 @@ app.state.storage = Storage(
     database=DATABASE_NAME,
     port=PORT,
 )
+app.state.faiss_index = None
 client = TestClient(app, base_url="http://")
-
-if not os.path.isfile(MODEL_PATH):
-    load_torch_model(
-        yadisk_model_url=MODEL_URL,
-        yadisk_api_endpoint=YADISK_API_ENDPOINT,
-        model_dir=VOLUME_DIR,
-        file_name=MODEL_FILE,
-    )
 
 
 @pytest.fixture(scope="session")

@@ -1,22 +1,31 @@
 import os
 import pytest
 from bs4 import BeautifulSoup
+from torch import load as torch_model_load
 from lib.db import Storage
-from lib.settings import FAISS_INDEX_PATH, IMAGE_FORMAT, MODEL_PATH
+from lib.settings import (
+    EMBED_SIZE,
+    FAISS_INDEX_PATH,
+    IMAGE_FORMAT,
+    MODEL_NAME,
+    MODEL_PATH,
+)
 from load_artifacts.utils import prepare_search_db
 from .conftest import client
 
 
 @pytest.mark.order(1)
 def test_init_db(mock_storage: Storage):
+    model = torch_model_load(MODEL_PATH).to("cpu")
     prepare_search_db(
         storage=mock_storage,
         image_path="/app/tests/gallery_images_test",
         image_format=IMAGE_FORMAT,
-        model_pth=MODEL_PATH,
+        model=model,
         csv_path="/app/tests/test.csv",
         faiss_index_path=FAISS_INDEX_PATH,
         device="cpu",
+        emb_size=EMBED_SIZE[MODEL_NAME],
     )
     # test load to postgresql
     pg_rows = mock_storage.count_rows()

@@ -2,9 +2,15 @@ __pycache__/
 data/
 volume_pgsql/
 venv/
+.venv/
+.vscode/
+*.pyc
+.env
+*.pyo
 **.pth
 **.csv
 !tests/test.csv
 **.index
 **.tar
 .pytest_cache
+**.pptx

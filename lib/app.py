@@ -4,6 +4,7 @@ import sys
 from contextlib import asynccontextmanager
 from io import BytesIO
 from typing import AsyncGenerator
+import faiss
 from fastapi import FastAPI, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -66,6 +67,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         database=DATABASE_NAME,
         port=PORT,
     )
+    # Loading FAISS index (may be absent on the first run with an empty database)
+    if os.path.isfile(FAISS_INDEX_PATH):
+        app.state.faiss_index = faiss.read_index(FAISS_INDEX_PATH)
+    else:
+        app.state.faiss_index = None
     yield
     # Switch off storage
     app.state.storage.disconnect()
@@ -133,10 +139,12 @@ def find_simular_images(
             device=DEVICE,
             model=request.app.state.model,
         )
+        if request.app.state.faiss_index is None:
+            request.app.state.faiss_index = faiss.read_index(FAISS_INDEX_PATH)
         candidates = get_similar_images(
             storage=request.app.state.storage,
             query_emb=query_emb,
-            faiss_index_path=FAISS_INDEX_PATH,
+            faiss_index=request.app.state.faiss_index,
         )
         html_data = build_html(
             image=image,

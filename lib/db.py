@@ -3,7 +3,7 @@ from typing import Generator
 import numpy as np
 from psycopg2 import Error
 from psycopg2.extras import execute_values
-from psycopg2.pool import SimpleConnectionPool
+from psycopg2.pool import ThreadedConnectionPool
 
 
 class Storage:
@@ -11,7 +11,7 @@ class Storage:
         """
         Initializes the connection to the database using a connection pool.
         """
-        self._pool = SimpleConnectionPool(
+        self._pool = ThreadedConnectionPool(
             minconn=1,
             maxconn=10,
             user=user,
@@ -107,7 +107,7 @@ class Storage:
             res = cursor.fetchall()
         self._pool.putconn(connection)
         ids = np.array([el[0] for el in res])
-        batch = np.array([el[1] for el in res])
+        batch = np.array([el[1] for el in res], dtype="float32")
         return ids, batch
 
     def get_all_emb_from_pg(

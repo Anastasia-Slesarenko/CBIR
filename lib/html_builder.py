@@ -19,15 +19,15 @@ def build_html(
         "request": request,
         "image0": main_image,
     }
-    for i in range(1, 9):
+    for i, candidate in enumerate(candidates[:8], start=1):
         # read image
         html_data[f"image{i}"] = base64.b64encode(
             get_bytes_image(
-                file=candidates[i - 1][0],
+                file=candidate[0],
                 image_path=image_path,
                 image_format=image_format,
             )
         ).decode("utf-8")
-        html_data[f"href{i}"] = candidates[i - 1][1]
-        html_data[f"title{i}"] = candidates[i - 1][2]
+        html_data[f"href{i}"] = candidate[1]
+        html_data[f"title{i}"] = candidate[2]
     return html_data
