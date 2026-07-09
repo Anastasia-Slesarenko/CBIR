@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 
 services:
   postgres:
@@ -33,6 +33,13 @@ services:
       - ./data:/app/data
     depends_on:
       - postgres
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
 volumes:
   volume_pgsql:
