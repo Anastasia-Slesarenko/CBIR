@@ -39,7 +39,8 @@ class Storage:
 
     def create_tables_structure(self) -> None:
         """
-        Creates the image_descriptor table in the database if it does not exist
+        Creates the image_descriptor table if it does not exist and clears it,
+        so a rebuild starts from an empty table instead of appending rows.
         """
         create_table_query = """
             CREATE TABLE IF NOT EXISTS image_descriptor (
@@ -51,6 +52,7 @@ class Storage:
             );
             CREATE INDEX IF NOT EXISTS image_id_btree
             ON image_descriptor (image_id);
+            TRUNCATE image_descriptor RESTART IDENTITY;
         """
         connection = self.get_connection()
         with connection.cursor() as cursor:
