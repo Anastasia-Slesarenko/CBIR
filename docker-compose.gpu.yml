@@ -1,0 +1,14 @@
+# GPU override. Использовать вместе с базовым файлом:
+#   docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+# Требует NVIDIA Container Toolkit на хосте.
+version: '3.8'
+
+services:
+  retrieval_service:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

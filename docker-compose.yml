@@ -33,13 +33,6 @@ services:
       - ./data:/app/data
     depends_on:
       - postgres
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
 
 volumes:
   pgdata:

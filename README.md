@@ -64,11 +64,11 @@ Intel Xeon + Tesla T4 16 ГБ ([demo/demo_load.py](demo/demo_load.py)):
 
 ## Установка и запуск
 
-Нужен Docker и Docker Compose. Веса модели скачиваются автоматически с
-Яндекс.Диска при первом старте (ссылка — `MODEL_URL`). Для офлайн-наполнения
-каталога дополнительно нужен Python 3.10.
+Нужен Docker и Docker Compose. Веса модели (~80 МБ) скачиваются автоматически
+при первом старте. Для инференса на GPU дополнительно нужен NVIDIA Container
+Toolkit на хосте.
 
-Переменные окружения:
+Переменные окружения (все с дефолтами):
 
 | Переменная | Назначение | По умолчанию |
 |---|---|---|
@@ -79,48 +79,62 @@ Intel Xeon + Tesla T4 16 ГБ ([demo/demo_load.py](demo/demo_load.py)):
 | `MODEL_URL` | публичная ссылка Яндекс.Диска на веса | ссылка в [lib/settings.py](lib/settings.py) |
 | `IMAGE_PATH` | каталог с изображениями товаров | `data/images` |
 
-Все переменные имеют дефолты, поэтому для локального запуска настройка не нужна.
-Чтобы переопределить — скопируйте шаблон [.env.example](.env.example) и отредактируйте;
-docker-compose подхватит `.env` автоматически (в репозиторий он не коммитится):
+Для переопределения — `cp .env.example .env` и отредактировать; docker-compose
+подхватит `.env` автоматически (в репозиторий он не коммитится).
 
+### 1. Запустить сервис
+
+CPU:
 ```bash
-cp .env.example .env
+docker-compose up -d --build
 ```
 
-### Запуск сервиса
-
+GPU (нужен NVIDIA Container Toolkit):
 ```bash
-docker-compose -f docker-compose.yml up --build -d
+docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
 ```
 
-Сервис поднимается на `http://localhost` (порт 80 → 8000 в контейнере).
-На главной странице — форма загрузки изображения.
+Сервис — на `http://localhost` (порт 80). Модель загрузится при старте; база
+пустая, пока не наполнен каталог (шаг 2).
 
-Остановка:
+### 2. Наполнить каталог
 
-```bash
-docker-compose -f docker-compose.yml down --remove-orphans
-```
-
-### Наполнение каталога
-
-Поиск возвращает результаты после того, как в базу загружен каталог.
-
-1. Положить в `data/` файл `avito_images.csv` с колонками `image_id`,
-   `title`, `item_url` и изображения каталога в `data/images/{image_id}.jpg`.
-2. Построить базу и индекс:
+Каталог — это `data/avito_images.csv` (колонки `image_id, title, item_url`) и
+изображения `data/images/{image_id}.jpg`. Готовый датасет лежит на Яндекс.Диске;
+скачиваем и строим индекс **внутри контейнера** — там Python, все зависимости и
+корректные права на `data/`:
 
 ```bash
-cd load_artifacts && python start.py
+# скачать и распаковать каталог в data/
+docker-compose exec retrieval_service python -c "
+import requests, tarfile, os
+url = 'https://cloud-api.yandex.net/v1/disk/public/resources/download'
+href = requests.get(url, params={'public_key': 'https://disk.yandex.ru/d/FrMFRUVfAaknsA'}).json()['href']
+with requests.get(href, stream=True) as r, open('/app/data/catalog.tar', 'wb') as f:
+    for chunk in r.iter_content(1 << 20):
+        f.write(chunk)
+tarfile.open('/app/data/catalog.tar').extractall('/app/data')
+os.remove('/app/data/catalog.tar')
+"
+
+# эмбеддинги → PostgreSQL, сборка FAISS-индекса
+docker-compose exec retrieval_service bash -c "cd load_artifacts && python start.py"
+docker-compose restart retrieval_service
 ```
 
-Скрипт считает эмбеддинги всех изображений, пишет их в PostgreSQL и собирает
-FAISS-индекс. [load_artifacts/setup.sh](load_artifacts/setup.sh) автоматизирует
-этот путь из готовых артефактов на Яндекс.Диске (блоки скачивания данных нужно
-раскомментировать под своё окружение).
+> При смене метрики/модели пересоберите FAISS-индекс (`start.py`) — старый на
+> диске не пересчитывается автоматически.
 
-> При смене метрики/модели пересоберите FAISS-индекс скриптом выше — старый
-> индекс на диске не пересчитывается автоматически.
+### 3. Проверить
+
+Открыть `http://localhost` (или внешний IP машины) в браузере — форма загрузки
+фото, по картинке вернётся выдача из 8 товаров. Программная проверка — curl в
+разделе [API](#api) ниже.
+
+### Остановка
+```bash
+docker-compose down
+```
 
 ## API
 
