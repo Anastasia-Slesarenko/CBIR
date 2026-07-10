@@ -109,7 +109,6 @@ def find_similar_images(
 
     :param request: The request object.
     :param image: The uploaded image file.
-    :param storage: The storage object for database interaction.
     :return: The rendered page with the similar images or an error message.
     """
     # check file format (case-insensitive, filename may be absent)

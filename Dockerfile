@@ -1,8 +1,8 @@
 FROM python:3.10-slim
 
 RUN mkdir /app
-RUN apt-get update
-RUN apt-get install ffmpeg libsm6 libxext6 -y
+RUN apt-get update && apt-get install -y ffmpeg libsm6 libxext6 \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY ./requirements.txt /app
 
@@ -15,16 +15,3 @@ COPY . /app
 
 EXPOSE 8000
 CMD ["python", "./main.py"]
-
-
-
-# RUN mkdir /app
-
-# WORKDIR /app
-
-# RUN python -m pip install fastapi==0.111.0
-
-# COPY . /app
-
-# EXPOSE 8000
-# CMD ["fastapi", "run", "./bin/test.py"]

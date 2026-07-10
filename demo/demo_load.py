@@ -50,7 +50,7 @@ async def load_test(url, image_path, duration=60):
 if __name__ == "__main__":
     asyncio.run(
         load_test(
-            "http://158.160.64.37/find_similar_images",
+            "http://localhost/find_similar_images",
             "tests/query_image_test.jpg",
         )
     )
