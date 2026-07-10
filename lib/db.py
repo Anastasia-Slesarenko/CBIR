@@ -143,5 +143,11 @@ class Storage:
             rows = cursor.fetchall()
         self._pool.putconn(connection)
         image_id_dict = {row[0]: row for row in rows}
-        order_rows = [image_id_dict[image_id] for image_id in index_list]
+        # Keep the FAISS ranking order; skip ids missing from the table
+        # (e.g. a stale index) instead of raising KeyError.
+        order_rows = [
+            image_id_dict[image_id]
+            for image_id in index_list
+            if image_id in image_id_dict
+        ]
         return order_rows

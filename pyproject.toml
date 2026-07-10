@@ -2,3 +2,6 @@
 line-length = 79
 target-version = "py310"
 extend-exclude = ["*.ipynb"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

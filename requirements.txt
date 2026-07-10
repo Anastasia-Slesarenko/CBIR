@@ -4,5 +4,4 @@ pillow==10.3.0
 psycopg2-binary==2.9.9
 torchvision==0.15
 open-metric-learning==2.0.0
-pandas
-packaging
+pandas==2.0.3

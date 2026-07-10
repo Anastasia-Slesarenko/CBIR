@@ -14,3 +14,4 @@ venv/
 **.tar
 .pytest_cache
 **.pptx
+cv.md

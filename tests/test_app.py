@@ -40,13 +40,13 @@ def test_main_page():
 
 
 @pytest.mark.order(3)
-def test_find_simular_images_invalid_format():
+def test_find_similar_images_invalid_format():
     file_path = "test.txt"  # invalid format file
     with open(file_path, "w") as f:
         f.write("This is a test file with invalid format")
 
     with open(file_path, "rb") as f:
-        response = client.post("/find_simular_images", files={"image": f})
+        response = client.post("/find_similar_images", files={"image": f})
 
     assert response.status_code == 400, response.status_code
     assert "Неправильный формат картинки" in response.text
@@ -54,9 +54,9 @@ def test_find_simular_images_invalid_format():
 
 
 @pytest.mark.order(5)
-def test_find_simular_images_valid_format():
+def test_find_similar_images_valid_format():
     with open("/app/tests/query_image_test.jpg", "rb") as f:
-        response = client.post("/find_simular_images", files={"image": f})
+        response = client.post("/find_similar_images", files={"image": f})
 
     assert response.status_code == 200
 

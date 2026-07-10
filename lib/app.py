@@ -99,8 +99,8 @@ async def main_page(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-@app.post("/find_simular_images", response_class=HTMLResponse)
-def find_simular_images(
+@app.post("/find_similar_images", response_class=HTMLResponse)
+def find_similar_images(
     request: Request,
     image: UploadFile,
 ) -> HTMLResponse:
@@ -112,23 +112,20 @@ def find_simular_images(
     :param storage: The storage object for database interaction.
     :return: The rendered page with the similar images or an error message.
     """
-    # check file format
-    if image.filename.split(".")[-1] not in ["jpg", "png", "jpeg"]:
-        logger.error(
-            msg=(
-                "Неправильный формат картинки. "
-                "Введите картину в формате jpg, png, jpeg",
-            )
+    # check file format (case-insensitive, filename may be absent)
+    extension = (image.filename or "").rsplit(".", 1)[-1].lower()
+    if extension not in ("jpg", "png", "jpeg"):
+        error_message = (
+            "Неправильный формат картинки. "
+            "Введите картинку в формате jpg, png, jpeg"
         )
+        logger.error(msg=error_message)
         return templates.TemplateResponse(
             "index.html",
             {
                 "request": request,
                 "error_code": "400. Bad Request",
-                "error": (
-                    "Неправильный формат картинки. "
-                    "Введите картину в формате jpg, png, jpeg",
-                ),
+                "error": error_message,
             },
             status_code=400,
         )

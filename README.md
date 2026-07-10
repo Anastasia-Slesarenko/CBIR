@@ -2,20 +2,18 @@
 
 Сервис визуального поиска: по загруженной фотографии находит похожие товары
 в каталоге объявлений и возвращает ссылки на них. Content-Based Image Retrieval
-на эмбеддингах Vision Transformer. Финальный проект Академии аналитиков Авито.
+на эмбеддингах Vision Transformer.
 
 **Стек:** Python 3.10 · FastAPI · PyTorch · FAISS · PostgreSQL · Docker
-
-[![CI](https://github.com/Anastasia-Slesarenko/CBIR/actions/workflows/ci.yml/badge.svg)](https://github.com/Anastasia-Slesarenko/CBIR/actions/workflows/ci.yml)
 
 ![Демонстрация работы сервиса](docs/demo_cbir.gif)
 
 Дообученный экстрактор Unicom ViT-B/32 даёт **CMC@8 49%** против 41% у базовой
 модели; средняя задержка ответа — **87 мс** на GPU Tesla T4 и 141 мс на CPU.
 
-## Как это работает
+## Архитектура
 
-1. Пользователь отправляет фото на `POST /find_simular_images`.
+1. Пользователь отправляет фото на `POST /find_similar_images`.
 2. Экстрактор Unicom ViT-B/32 (PyTorch) считает эмбеддинг размерности 512
    и L2-нормализует его.
 3. FAISS `IndexFlatIP` (внутреннее произведение по нормированным векторам =
@@ -56,7 +54,7 @@
 
 ### Нагрузочное тестирование
 
-Случайные изображения в течение минуты на `/find_simular_images`, сервер
+Случайные изображения в течение минуты на `/find_similar_images`, сервер
 Intel Xeon + Tesla T4 16 ГБ ([demo/demo_load.py](demo/demo_load.py)):
 
 | Устройство | Запросов | Средний ответ | p95 | RPS |
@@ -84,16 +82,14 @@ Toolkit на хосте.
 Для переопределения — `cp .env.example .env` и отредактировать; docker-compose
 подхватит `.env` автоматически (в репозиторий он не коммитится).
 
+Команды ниже — обёртки над `docker-compose` в [Makefile](Makefile); полный
+список — `make help`. Compose v1 по умолчанию, для v2 — `make up COMPOSE="docker compose"`.
+
 ### 1. Запустить сервис
 
-CPU:
 ```bash
-docker-compose up -d --build
-```
-
-GPU (нужен NVIDIA Container Toolkit):
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+make up    # CPU
+make gpu   # GPU, нужен NVIDIA Container Toolkit
 ```
 
 Сервис — на `http://localhost` (порт 80). Модель загрузится при старте; база
@@ -107,24 +103,11 @@ docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
 корректные права на `data/`:
 
 ```bash
-# скачать и распаковать каталог в data/
-docker-compose exec retrieval_service python -c "
-import requests, tarfile, os
-url = 'https://cloud-api.yandex.net/v1/disk/public/resources/download'
-href = requests.get(url, params={'public_key': 'https://disk.yandex.ru/d/FrMFRUVfAaknsA'}).json()['href']
-with requests.get(href, stream=True) as r, open('/app/data/catalog.tar', 'wb') as f:
-    for chunk in r.iter_content(1 << 20):
-        f.write(chunk)
-tarfile.open('/app/data/catalog.tar').extractall('/app/data')
-os.remove('/app/data/catalog.tar')
-"
-
-# эмбеддинги → PostgreSQL, сборка FAISS-индекса
-docker-compose exec retrieval_service bash -c "cd load_artifacts && python start.py"
-docker-compose restart retrieval_service
+make catalog   # скачать и распаковать каталог в data/
+make index     # эмбеддинги в PostgreSQL, сборка FAISS-индекса
 ```
 
-> При смене метрики/модели пересоберите FAISS-индекс (`start.py`) — старый на
+> При смене метрики/модели пересоберите FAISS-индекс (`make index`) — старый на
 > диске не пересчитывается автоматически.
 
 ### 3. Проверить
@@ -135,7 +118,7 @@ docker-compose restart retrieval_service
 
 ### Остановка
 ```bash
-docker-compose down
+make down
 ```
 
 ## API
@@ -143,10 +126,10 @@ docker-compose down
 | Метод | Путь | Описание |
 |---|---|---|
 | `GET` | `/` | веб-страница с формой загрузки |
-| `POST` | `/find_simular_images` | поиск похожих; поле `image` (jpg/png/jpeg), ответ — HTML с top-8 |
+| `POST` | `/find_similar_images` | поиск похожих; поле `image` (jpg/png/jpeg), ответ — HTML с top-8 |
 
 ```bash
-curl -X POST http://localhost/find_simular_images \
+curl -X POST http://localhost/find_similar_images \
   -F "image=@tests/query_image_test.jpg"
 ```
 
@@ -172,7 +155,7 @@ curl -X POST http://localhost/find_simular_images \
 ```
 lib/                  FastAPI-сервис
   app.py              эндпоинты, загрузка модели и индекса при старте
-  model.py            экстрактор эмбеддингов и трансформы
+  model.py            экстрактор эмбеддингов и препроцессинг изображений
   faiss_search.py     построение FAISS-индекса и поиск
   db.py               работа с PostgreSQL (пул соединений)
   html_builder.py     сборка ответа
@@ -189,19 +172,19 @@ tests/                pytest-набор
 Тесты требуют PostgreSQL и запускаются в контейнере:
 
 ```bash
-docker-compose -f docker-compose-test.yml up --build --abort-on-container-exit
+make test
 ```
 
 Линтер и форматтер — [ruff](https://docs.astral.sh/ruff/):
 
 ```bash
-ruff check .
-ruff format .
+make lint     # ruff check + ruff format --check
+make format   # ruff format
 ```
 
 Эти же проверки гоняет CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) на
 каждый push в `main`/`design_cleanup` и на pull request: джоба `lint` — `ruff`,
-джоба `test` — весь набор через `docker-compose-test.yml`. Статус — в бейдже вверху.
+джоба `test` — весь набор через `docker-compose-test.yml`.
 
 ## Ограничения
 
@@ -214,7 +197,11 @@ ruff format .
 - Пароль БД имеет дефолт в конфиге (переопределяется через env); для
   публичного деплоя его нужно задавать через секрет-хранилище.
 
+## Лицензия
+
+[MIT](LICENSE)
+
 ---
 
-Команда **Triplet A** — Слесаренко Анастасия. Учебный проект Академии
-аналитиков Авито.
+Выпускной проект Академии аналитиков Авито.
+Автор — Анастасия Слесаренко.
