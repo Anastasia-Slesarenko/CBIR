@@ -1,7 +1,3 @@
-# Языковая статистика GitHub (Linguist) считает язык по байтам.
-# Ноутбуки с зашитыми выводами и сторонняя статика перекашивают бар,
-# поэтому исключаем их из подсчёта. Файлы остаются в репозитории.
-
 experiments/*.ipynb              linguist-documentation
 lib/static/**                    linguist-vendored
 *.min.css                        linguist-vendored
