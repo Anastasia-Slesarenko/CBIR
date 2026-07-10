@@ -39,8 +39,8 @@ class Storage:
 
     def create_tables_structure(self) -> None:
         """
-        Creates the image_descriptor table if it does not exist and clears it,
-        so a rebuild starts from an empty table instead of appending rows.
+        Creates the image_descriptor table if it does not exist
+        and truncates it before a rebuild.
         """
         create_table_query = """
             CREATE TABLE IF NOT EXISTS image_descriptor (
@@ -143,8 +143,7 @@ class Storage:
             rows = cursor.fetchall()
         self._pool.putconn(connection)
         image_id_dict = {row[0]: row for row in rows}
-        # Keep the FAISS ranking order; skip ids missing from the table
-        # (e.g. a stale index) instead of raising KeyError.
+        # keep faiss order, skip missing ids
         order_rows = [
             image_id_dict[image_id]
             for image_id in index_list

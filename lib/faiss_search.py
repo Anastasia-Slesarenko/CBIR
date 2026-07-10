@@ -10,7 +10,7 @@ def train_faiss_index(
     faiss_index_path: str,
 ) -> None:
     """Initializes FAISS index and saves it."""
-    # Inner product over L2-normalized vectors gives cosine similarity.
+    # IP + L2-normalize = cosine similarity
     index = faiss.IndexFlatIP(emb_size)
     index_with_map = faiss.IndexIDMap(index)
     for ids, batch in storage.get_all_emb_from_pg(batch_size):

@@ -67,7 +67,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         database=DATABASE_NAME,
         port=PORT,
     )
-    # Loading FAISS index (may be absent on the first run with an empty database)
+    # Loading FAISS index (may be missing on first run)
     if os.path.isfile(FAISS_INDEX_PATH):
         app.state.faiss_index = faiss.read_index(FAISS_INDEX_PATH)
     else:
@@ -111,7 +111,7 @@ def find_similar_images(
     :param image: The uploaded image file.
     :return: The rendered page with the similar images or an error message.
     """
-    # check file format (case-insensitive, filename may be absent)
+    # check file format
     extension = (image.filename or "").rsplit(".", 1)[-1].lower()
     if extension not in ("jpg", "png", "jpeg"):
         error_message = (
